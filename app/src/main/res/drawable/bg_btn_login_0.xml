@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <!--<gradient android:startColor="#1fb8ce" android:endColor="#88dae6" android:angle="270" />-->
+            <!--<corners android:radius="25dp" />-->
+
+            <!-- View background color -->
+            <solid
+                android:color="#ffffff" >
+            </solid>
+
+            <!-- View border color and width -->
+            <stroke
+                android:width="1dp"
+                android:color="#8ba4a4a4" >
+            </stroke>
+
+            <!-- The radius makes the corners rounded -->
+            <corners
+                android:radius="30dp">
+            </corners>
+
+        </shape>
+    </item>
+</layer-list>
