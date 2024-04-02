@@ -62,10 +62,10 @@ public class FragmentSignIn extends Fragment {
             @Override
             public void onClick(View view) {
                 context.showProgress("Request", "Wait!!!");
-//                String username = etUsername.getText().toString().trim();
-//                String password = etPassword.getText().toString().trim();
-                String username = "tuyen.cntt.k13a@gmail.com";
-                String password = "Tuyen321!!";
+                String username = etUsername.getText().toString().trim();
+                String password = etPassword.getText().toString().trim();
+//                String username = "tuyen.cntt.k13a@gmail.com";
+//                String password = "Tuyen321!!";
                 if(username.length() == 0 || password.length() == 0){
                     Toast.makeText(context, "Username and password not empty", Toast.LENGTH_SHORT).show();
                 }else{
