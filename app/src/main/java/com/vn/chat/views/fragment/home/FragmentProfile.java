@@ -2,6 +2,7 @@ package com.vn.chat.views.fragment.home;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.ImageUtils;
 import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.views.activity.AuthActivity;
 import com.vn.chat.views.activity.HomeActivity;
 
 @SuppressLint("ValidFragment")
@@ -66,6 +68,7 @@ public class FragmentProfile extends Fragment {
                 activity.getHomeViewModel().logout().observe(activity, res -> {
                     if(RestUtils.isSuccess(res)){
                         activity.finish();
+                        activity.startActivity(new Intent(activity, AuthActivity.class));
                         Toast.makeText(activity, "Logout successful", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show();

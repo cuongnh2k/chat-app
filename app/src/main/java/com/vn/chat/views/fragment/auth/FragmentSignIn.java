@@ -17,6 +17,8 @@ import androidx.lifecycle.LiveData;
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
+import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.common.utils.StringUtils;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 import com.vn.chat.views.activity.HomeActivity;
@@ -60,16 +62,25 @@ public class FragmentSignIn extends Fragment {
             @Override
             public void onClick(View view) {
                 context.showProgress("Request", "Wait!!!");
-                String username = etUsername.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
-//                String username = "tuyen.cntt.k13a@gmail.com";
-//                String password = "Tuyen321!!";
+//                String username = etUsername.getText().toString().trim();
+//                String password = etPassword.getText().toString().trim();
+                String username = "tuyen.cntt.k13a@gmail.com";
+                String password = "Tuyen321!!";
                 if(username.length() == 0 || password.length() == 0){
                     Toast.makeText(context, "Username and password not empty", Toast.LENGTH_SHORT).show();
                 }else{
                     //TODO: Request login auth
+                    if(!StringUtils.validatorEmail(username)){
+                        Toast.makeText(context, "Email format error", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if(!StringUtils.validatorPassword(password)){
+                        Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     context.getAuthViewModel().login(new User(username, password)).observe(context, res -> {
-                        if(res.getCode().equals(1)) {
+                        if(RestUtils.isSuccess(res)) {
                             DataStatic.AUTHOR.ACCESS_TOKEN = res.getData().getAccessToken();
                             DataStatic.AUTHOR.REFRESH_TOKEN = res.getData().getRefreshToken();
                             DataStatic.AUTHOR.DEVICE_ID = res.getData().getDeviceId();
@@ -81,11 +92,22 @@ public class FragmentSignIn extends Fragment {
                                     context.setFragmentDeviceConfirm(deviceId);
                                 } else {
                                     Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show();
+                                    context.finish();
                                     context.startActivity(new Intent(context, HomeActivity.class));
                                 }
                             });
                         }else{
-                            Toast.makeText(context, "Login fail", Toast.LENGTH_SHORT).show();
+                            switch (res.getKey()){
+                                case "USER_PASSWORD_WRONG":
+                                    Toast.makeText(context, "Password wrong", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "USER_NOT_FOUND":
+                                    Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(context, "User/Password INVALID", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
                         }
                         context.hideProgress();
                     });

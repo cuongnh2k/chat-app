@@ -66,6 +66,7 @@ public class FragmentDeviceConfirm extends Fragment {
                 device.setId(deviceId);
                 context.getAuthViewModel().activeDevice(device).observe(context, res -> {
                     if(res.getCode().equals(1)) {
+                        context.finish();
                         context.startActivity(new Intent(context, HomeActivity.class));
                     }
                     context.hideProgress();

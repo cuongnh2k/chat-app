@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.vn.chat.R;
+import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.common.utils.StringUtils;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 
@@ -62,7 +64,6 @@ public class FragmentSignUp extends Fragment {
         this.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.showProgress("Request...", "Wait!!!");
                 String password = etPassword.getText().toString().trim();
                 String rePassword = etRePassword.getText().toString().trim();
                 String fullName = etFullName.getText().toString().trim();
@@ -75,16 +76,28 @@ public class FragmentSignUp extends Fragment {
                     Toast.makeText(context, "Please update information to input", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                if(!StringUtils.validatorEmail(mail)){
+                    Toast.makeText(context, "Email format error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(!StringUtils.validatorPassword(password)){
+                    Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                context.showProgress("Request...", "Wait!!!");
                 if(password.equals(rePassword)){
                     User user = new User("0", "", password, fullName, mail);
                     context.getAuthViewModel().register(user).observe(context, res -> {
-                        if(res.getCode().equals(1)) {
+                        if(RestUtils.isSuccess(res)) {
                             Toast.makeText(context, "Register user successful", Toast.LENGTH_SHORT).show();
                             context.setFragmentUserConfirm(res.getData().getUserId());
                         }
-//                        Toast.makeText(context, res.getMessage(), Toast.LENGTH_SHORT).show();
                         context.hideProgress();
                     });
+                }else{
+                    Toast.makeText(context, "Password different", Toast.LENGTH_SHORT).show();
                 }
             }
         });

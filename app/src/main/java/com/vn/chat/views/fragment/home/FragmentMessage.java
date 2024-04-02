@@ -95,6 +95,7 @@ public class FragmentMessage extends Fragment {
                         messages.add(0, message);
                     }
                     messageAdapter.notifyDataSetChanged();
+                    rvData.scrollToPosition(messages.size() - 1);
                 }
             }
         });
@@ -103,6 +104,7 @@ public class FragmentMessage extends Fragment {
     public void pushMessage(Message m){
         messages.add(messages.size(), m);
         messageAdapter.notifyDataSetChanged();
+        rvData.scrollToPosition(messages.size() - 1);
     }
 
     private void actionView(){
