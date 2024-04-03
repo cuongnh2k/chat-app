@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.vn.chat.R;
 import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.utils.StringUtils;
+import com.vn.chat.common.utils.ViewUtils;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 
@@ -72,6 +73,7 @@ public class FragmentSignUp extends Fragment {
 //                String rePassword = "Tuyen321!!";
 //                String fullName = "Tuyen";
 //                String mail = "test0@gmail.com";
+                ViewUtils.hideKeyboard(context);
                 if(password.length() == 0 || fullName.length() == 0 || mail.length() == 0){
                     Toast.makeText(context, "Please update information to input", Toast.LENGTH_SHORT).show();
                     return;
@@ -83,7 +85,10 @@ public class FragmentSignUp extends Fragment {
                 }
 
                 if(!StringUtils.validatorPassword(password)){
-                    Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Password need a minimum of 1 lower case letter [a-z] and\n" +
+                            "a minimum of 1 upper case letter [A-Z] and\n" +
+                            "a minimum of 1 numeric character [0-9] and\n" +
+                            "a minimum of 1 special character: ~`!@#$%^&*()-_+={}[]|\\;:\"<>,./?", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 context.showProgress("Request...", "Wait!!!");

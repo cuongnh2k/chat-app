@@ -2,11 +2,13 @@ package com.vn.chat.views.fragment.auth;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.utils.StringUtils;
+import com.vn.chat.common.utils.ViewUtils;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 import com.vn.chat.views.activity.HomeActivity;
@@ -61,13 +64,14 @@ public class FragmentSignIn extends Fragment {
         this.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.showProgress("Request", "Wait!!!");
-                String username = etUsername.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
-//                String username = "tuyen.cntt.k13a@gmail.com";
-//                String password = "Tuyen321!!";
+//                String username = etUsername.getText().toString().trim();
+//                String password = etPassword.getText().toString().trim();
+                String username = "tuyen.cntt.k13a@gmail.com";
+                String password = "Tuyen321!!";
+                ViewUtils.hideKeyboard(context);
                 if(username.length() == 0 || password.length() == 0){
                     Toast.makeText(context, "Username and password not empty", Toast.LENGTH_SHORT).show();
+                    return;
                 }else{
                     //TODO: Request login auth
                     if(!StringUtils.validatorEmail(username)){
@@ -79,6 +83,8 @@ public class FragmentSignIn extends Fragment {
                         Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
+                    context.showProgress("Request", "Wait!!!");
                     context.getAuthViewModel().login(new User(username, password)).observe(context, res -> {
                         if(RestUtils.isSuccess(res)) {
                             DataStatic.AUTHOR.ACCESS_TOKEN = res.getData().getAccessToken();

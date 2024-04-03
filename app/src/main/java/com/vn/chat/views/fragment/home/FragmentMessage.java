@@ -19,6 +19,7 @@ import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.IntentUtils;
 import com.vn.chat.common.utils.PermissionUtils;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.File;
@@ -112,18 +113,17 @@ public class FragmentMessage extends Fragment {
             @Override
             public void onClick(View view) {
                 String content = etContent.getText().toString().trim();
-                if(content.length() > 0){
+                if(content.length() > 0 || message.getFiles().size() > 0){
                     message.setContent(content);
                     message.setChannelId(channel.getId());
                     message.getSender().setId(DataStatic.AUTHOR.USER_INFO.getId());
                     message.getSender().setUserId(DataStatic.AUTHOR.USER_INFO.getId());
 
                     activity.getHomeViewModel().postMessage(message).observe(activity, res -> {
-                        if(res.getCode().equals(1)){
-                            pushMessage(message);
-                        }
+
                     });
                     etContent.setText("");
+                    setFileInfo(null);
                 }
             }
         });

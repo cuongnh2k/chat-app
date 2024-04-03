@@ -92,9 +92,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 }
             }
             this.tvContent.setText(m1.getContent());
-            if(m1.getFiles() != null && m1.getFiles().size() > 0){
+            if(m1.getMessageFiles() != null && m1.getMessageFiles().size() > 0){
                 this.ivMessageImg.setVisibility(View.VISIBLE);
-                ImageUtils.loadUrl(activity, ivMessageImg, m1.getFiles().get(0).getUrl());
+                ImageUtils.loadUrl(activity, ivMessageImg, m1.getMessageFiles().get(0).getUrl());
             }else{
                 this.ivMessageImg.setVisibility(View.GONE);
             }

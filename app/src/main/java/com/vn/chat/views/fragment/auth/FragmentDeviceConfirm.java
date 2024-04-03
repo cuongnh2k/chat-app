@@ -18,6 +18,7 @@ import androidx.lifecycle.LiveData;
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.utils.SessionUtils;
 import com.vn.chat.data.Device;
 import com.vn.chat.data.User;
@@ -65,9 +66,11 @@ public class FragmentDeviceConfirm extends Fragment {
                 device.setCode(code);
                 device.setId(deviceId);
                 context.getAuthViewModel().activeDevice(device).observe(context, res -> {
-                    if(res.getCode().equals(1)) {
+                    if(RestUtils.isSuccess(res)) {
                         context.finish();
                         context.startActivity(new Intent(context, HomeActivity.class));
+                    }else {
+                        Toast.makeText(context, "Code verify wrong", Toast.LENGTH_SHORT).show();
                     }
                     context.hideProgress();
                 });

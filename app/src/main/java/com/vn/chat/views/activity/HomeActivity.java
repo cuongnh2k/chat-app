@@ -305,6 +305,14 @@ public class HomeActivity extends CommonActivity {
         return fragmentTarget;
     }
 
+    public void setFragmentTarget(Fragment fragmentTarget) {
+        this.fragmentTarget = fragmentTarget;
+    }
+
+    public FragmentHome getFragmentHome() {
+        return fragmentHome;
+    }
+
     public FragmentMessage getFragmentMessage() {
         return fragmentMessage;
     }
@@ -316,4 +324,5 @@ public class HomeActivity extends CommonActivity {
     public FragmentMessageConfig getFragmentMessageConfig() {
         return fragmentMessageConfig;
     }
+
 }

@@ -107,4 +107,10 @@ public class FragmentHome extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        context.setFragmentTarget(context.getFragmentHome());
+    }
 }
