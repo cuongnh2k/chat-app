@@ -38,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_weight="10"
-        android:enabled="false"
         android:gravity="center|left"
         android:hint="@string/txt_username"
         android:paddingLeft="16dp"
@@ -72,7 +71,6 @@
         android:paddingBottom="10dp"
         android:textSize="13sp"
         android:textStyle="italic"
-        android:enabled="false"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -105,15 +103,37 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <Button
-        android:id="@+id/btn_logout"
+        android:id="@+id/btn_update"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_btn_login"
-        android:text="Logout"
+        android:text="Update"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/et_mail" />
+
+    <Button
+        android:id="@+id/btn_change_pass"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_btn_login"
+        android:text="Change pass"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btn_update" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_btn_login"
+        android:text="Logout"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btn_change_pass" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

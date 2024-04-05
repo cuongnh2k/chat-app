@@ -17,7 +17,11 @@ import androidx.annotation.Nullable;
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.ImageUtils;
+import com.vn.chat.common.utils.IntentUtils;
+import com.vn.chat.common.utils.PermissionUtils;
 import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.data.File;
+import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 import com.vn.chat.views.activity.HomeActivity;
 
@@ -29,7 +33,8 @@ public class FragmentProfile extends Fragment {
     private View view;
     private ImageView ivAvatar;
     private EditText etUsername, etFullName, etEmail;
-    private Button btnLogout;
+    private Button btnLogout, btnUpdate, btnChangePass;
+    private User userInfo = new User();
 
     @SuppressLint("ValidFragment")
     public FragmentProfile(HomeActivity mContext){
@@ -52,6 +57,8 @@ public class FragmentProfile extends Fragment {
         this.etFullName = this.view.findViewById(R.id.et_full_name);
         this.etEmail = this.view.findViewById(R.id.et_mail);
         this.btnLogout = this.view.findViewById(R.id.btn_logout);
+        this.btnUpdate = this.view.findViewById(R.id.btn_update);
+        this.btnChangePass = this.view.findViewById(R.id.btn_change_pass);
     }
 
     private void loadUserInfo(){
@@ -62,6 +69,15 @@ public class FragmentProfile extends Fragment {
     }
 
     private void actionView(){
+        this.ivAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(PermissionUtils.readExternalStorage(activity)){
+                    IntentUtils.chooseImage(activity, IntentUtils.FRAGMENT.MESSAGE);
+                }
+            }
+        });
+
         this.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,5 +92,9 @@ public class FragmentProfile extends Fragment {
                 });
             }
         });
+    }
+
+    public void changeAvatar(File file){
+
     }
 }

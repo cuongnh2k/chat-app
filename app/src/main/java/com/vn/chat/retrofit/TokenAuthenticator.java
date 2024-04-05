@@ -51,7 +51,7 @@ public class TokenAuthenticator implements Authenticator {
         urlConnection.setDoInput(true);
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty("User-Agent", "okhttp/3.14.7");
-//        urlConnection.setRequestProperty("Authorization", "Bearer "+DataStatic.AUTHOR.REFRESH_TOKEN);
+        urlConnection.setRequestProperty("Authorization", "Bearer "+DataStatic.AUTHOR.REFRESH_TOKEN);
         urlConnection.setUseCaches(false);
         String urlParameters = "";
 
@@ -76,9 +76,15 @@ public class TokenAuthenticator implements Authenticator {
 
             // this gson part is optional , you can read response directly from Json too
             Gson gson = new Gson();
-            ApiResponse<Device> res =
+            ApiResponse res =
                     gson.fromJson(response.toString(), ApiResponse.class);
-            SessionUtils.set(this.application, DataStatic.SESSION.KEY.AUTH, res);
+            SessionUtils.set(this.application, DataStatic.SESSION.KEY.AUTH, res.getData());
+
+            String strJson = SessionUtils.get(this.application, DataStatic.SESSION.KEY.AUTH, "{}");
+            Device auth = new Gson().fromJson(strJson, Device.class);
+            DataStatic.AUTHOR.ACCESS_TOKEN = auth.getAccessToken();
+            DataStatic.AUTHOR.REFRESH_TOKEN = auth.getRefreshToken();
+            DataStatic.AUTHOR.DEVICE_ID = auth.getDeviceId();
 
             // handle new token ...
             // save it to the sharedpreferences, storage bla bla ...

@@ -20,6 +20,7 @@ import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.common.utils.SessionUtils;
 import com.vn.chat.common.utils.StringUtils;
 import com.vn.chat.common.utils.ViewUtils;
 import com.vn.chat.data.User;
@@ -90,6 +91,7 @@ public class FragmentSignIn extends Fragment {
                             DataStatic.AUTHOR.ACCESS_TOKEN = res.getData().getAccessToken();
                             DataStatic.AUTHOR.REFRESH_TOKEN = res.getData().getRefreshToken();
                             DataStatic.AUTHOR.DEVICE_ID = res.getData().getDeviceId();
+                            SessionUtils.set(context, DataStatic.SESSION.KEY.AUTH, res.getData());
                             context.getAuthViewModel().refresh();
                             LiveData<ApiResponse<Map<String, Object>>> lvData2 = context.getAuthViewModel().getDevices("false");
                             lvData2.observe(context, data2 -> {

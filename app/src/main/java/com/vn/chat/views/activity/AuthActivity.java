@@ -5,18 +5,25 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
+import com.vn.chat.common.utils.NetworkUtils;
+import com.vn.chat.common.utils.SessionUtils;
 import com.vn.chat.common.view.icon.TextViewAwsSo;
+import com.vn.chat.data.Device;
 import com.vn.chat.viewmodel.AuthViewModel;
 import com.vn.chat.views.fragment.auth.FragmentDeviceConfirm;
 import com.vn.chat.views.fragment.auth.FragmentSignIn;
 import com.vn.chat.views.fragment.auth.FragmentSignUp;
 import com.vn.chat.views.fragment.auth.FragmentUserConfirm;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class AuthActivity extends CommonActivity {
@@ -34,7 +41,12 @@ public class AuthActivity extends CommonActivity {
         setContentView(R.layout.activity_auth);
         this.init();
         this.actionView();
-        setFragmentSignIn();
+        if(NetworkUtils.isNetworkAvailable(this)){
+            loadSession();
+        }else{
+            Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+            setFragmentSignIn();
+        }
     }
 
     private void init(){
@@ -50,6 +62,19 @@ public class AuthActivity extends CommonActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void loadSession(){
+        String strJson = SessionUtils.get(this, DataStatic.SESSION.KEY.AUTH, "{}");
+        Device auth = new Gson().fromJson(strJson, Device.class);
+        if(auth != null && auth.getAccessToken() != null){
+            DataStatic.AUTHOR.ACCESS_TOKEN = auth.getAccessToken();
+            DataStatic.AUTHOR.REFRESH_TOKEN = auth.getRefreshToken();
+            DataStatic.AUTHOR.DEVICE_ID = auth.getDeviceId();
+            startActivity(new Intent(this, HomeActivity.class));
+        }else{
+            setFragmentSignIn();
+        }
     }
 
     public AuthViewModel getAuthViewModel(){

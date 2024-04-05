@@ -90,7 +90,7 @@ public class FragmentMessage extends Fragment {
         messages.clear();
         messageAdapter.notifyDataSetChanged();
         activity.getHomeViewModel().getMessage(new Message(this.channel.getId())).observe(activity, res -> {
-            if(res.getCode().equals(1)){
+            if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for(Message message : res.getItems()){
                         messages.add(0, message);
