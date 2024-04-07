@@ -130,4 +130,20 @@ public class AuthRepository {
         });
         return data;
     }
+
+    public LiveData<ApiResponse<User>> updateUser(User user){
+        MutableLiveData<ApiResponse<User>> data = new MutableLiveData<>();
+        this.authRequest.update(user).enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                data.setValue(RestUtils.get(response));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                System.out.println("ERROR: "+new Gson().toJson(call));
+            }
+        });
+        return data;
+    }
 }

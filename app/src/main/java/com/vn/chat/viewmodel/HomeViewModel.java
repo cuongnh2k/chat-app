@@ -107,4 +107,9 @@ public class HomeViewModel extends AndroidViewModel {
         d.setDeviceIds(Arrays.asList(DataStatic.AUTHOR.DEVICE_ID));
         return this.authRepository.logout(d);
     }
+
+
+    public LiveData<ApiResponse<User>> updateUser(User user){
+        return this.authRepository.updateUser(user);
+    }
 }

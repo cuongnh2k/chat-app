@@ -11,6 +11,7 @@ public class User {
     private String avatarUrl;
     private String userId = "";
     private String status;
+    private String oldPassword;
 
     public User() {
     }
@@ -102,6 +103,14 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     @Override

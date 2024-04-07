@@ -52,7 +52,6 @@ public class AuthActivity extends CommonActivity {
     private void init(){
         this.authViewModel = ViewModelProviders.of(AuthActivity.this).get(AuthViewModel.class);
         this.twaBtnBack = findViewById(R.id.twa_btn_back);
-        super.progressDialog = new ProgressDialog(this);
     }
 
     private void actionView(){

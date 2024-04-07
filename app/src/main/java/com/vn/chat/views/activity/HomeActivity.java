@@ -292,7 +292,7 @@ public class HomeActivity extends CommonActivity {
                                 fragmentContact.getDialogCreateGroup().setImageAvatar(res.getData());
                             }
                             if(fragmentTarget instanceof FragmentProfile){
-
+                                fragmentProfile.changeAvatar(res.getData());
                             }
                         }
                     }
