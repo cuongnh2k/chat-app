@@ -62,9 +62,7 @@ public class ChannelAdapter extends ArrayAdapter<Channel> implements Filterable 
     }
 
     public void notifyDataSetChanged(List<Channel> list) {
-        this.channels.clear();
         this.channels.addAll(list);
-        this.listFilter.clear();
         this.listFilter.addAll(list);
         super.notifyDataSetChanged();
     }

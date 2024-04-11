@@ -2,7 +2,6 @@ package com.vn.chat.views.fragment.home;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.vn.chat.data.Message;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.MessageAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +60,7 @@ public class FragmentMessage extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
+        this.loadChanelDetail();
         this.loadMessage();
         this.actionView();
         return this.view;
@@ -102,8 +101,22 @@ public class FragmentMessage extends Fragment {
         });
     }
 
+    private void loadChanelDetail(){
+        activity.getHomeViewModel().detailChannel(this.channel.getId()).observe(activity, res->{
+            if(RestUtils.isSuccess(res)){
+                channel.setOwnerId(res.getData().getOwnerId());
+                if(DataStatic.AUTHOR.USER_INFO.getId().equals(res.getData().getOwnerId())){
+                    channel.setAdmin(true);
+                }else{
+                    channel.setAdmin(false);
+                }
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     public void pushMessage(Message m){
-        messages.add(messages.size(), m);
+        messages.add(m);
         messageAdapter.notifyDataSetChanged();
         rvData.scrollToPosition(messages.size() - 1);
     }
@@ -124,6 +137,7 @@ public class FragmentMessage extends Fragment {
                     });
                     etContent.setText("");
                     setFileInfo(null);
+                    message = new Message();
                 }
             }
         });

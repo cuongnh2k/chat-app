@@ -6,20 +6,30 @@ import com.vn.chat.data.File;
 import com.vn.chat.data.Message;
 import com.vn.chat.data.User;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ChannelRequest {
+
+    @GET("chat/channel/{channelId}")
+    Call<ApiResponse<Channel>> detailChannel(@Path("channelId") String channelId);
 
     @GET("chat/channel")
     Call<ApiResponse<Channel>> getChannel(@Query("type") String type);
 
     @POST("chat/channel")
     Call<ApiResponse<Channel>> postChannel(@Body Channel channel);
+
+    @PUT("chat/channel/{channelId}")
+    Call<ApiResponse<Channel>> putChannel(@Path("channelId") String channelId, @Body Channel channel);
 
     @GET("chat/channel/latest-chat")
     Call<ApiResponse<Channel>> getLatestChannel();

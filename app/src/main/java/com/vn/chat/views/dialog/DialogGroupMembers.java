@@ -71,7 +71,9 @@ public class DialogGroupMembers {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for (User user : res.getItems()){
-                        members.add(new Channel(user.getId(), user.getName(), user.getEmail(), false));
+                        Channel c = new Channel(user.getId(), user.getName(), user.getEmail(), false);
+                        c.setAdmin(channel.isAdmin());
+                        members.add(c);
                     }
                     this.tvNoData.setVisibility(View.GONE);
                     this.lvMember.setVisibility(View.VISIBLE);

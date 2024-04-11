@@ -12,6 +12,7 @@ public class User {
     private String userId = "";
     private String status;
     private String oldPassword;
+    private boolean isOwner = false;
 
     public User() {
     }
@@ -111,6 +112,14 @@ public class User {
 
     public void setOldPassword(String oldPassword) {
         this.oldPassword = oldPassword;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     @Override

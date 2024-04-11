@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vn.chat.R;
@@ -66,7 +67,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private TextView tvContent, tvName;
-        private ImageView ivMessageImg;
+        private ImageView ivThumb, ivMessageImg;
+        private CardView cvThumb;
 
         public ViewHolder(View view){
             super(view);
@@ -78,18 +80,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.tvName = this.view.findViewById(R.id.tv_name);
             this.tvContent = this.view.findViewById(R.id.tv_content);
             this.ivMessageImg = this.view.findViewById(R.id.iv_message_img);
+            this.ivThumb = this.view.findViewById(R.id.iv_thumb);
+            this.cvThumb = this.view.findViewById(R.id.cardView);
         }
 
         public void showData(Message m0, Message m1){
             this.tvName.setText(m1.getSender().getName());
             if(m0 == null){
                 this.tvName.setVisibility(View.VISIBLE);
+                this.cvThumb.setVisibility(View.VISIBLE);
+                ImageUtils.loadUrl(activity, ivThumb, m1.getSender().getAvatarUrl());
             }else{
                 if(!m0.getSender().getUserId().equalsIgnoreCase(m1.getSender().getUserId())){
                     this.tvName.setVisibility(View.VISIBLE);
+                    this.cvThumb.setVisibility(View.VISIBLE);
+                    ImageUtils.loadUrl(activity, ivThumb, m1.getSender().getAvatarUrl());
                 }else{
                     this.tvName.setVisibility(View.GONE);
+                    this.cvThumb.setVisibility(View.GONE);
                 }
+            }
+            if(m1.getContent().trim().length() == 0){
+                this.tvContent.setVisibility(View.GONE);
+            }else{
+                this.tvContent.setVisibility(View.VISIBLE);
             }
             this.tvContent.setText(m1.getContent());
             if(m1.getMessageFiles() != null && m1.getMessageFiles().size() > 0){

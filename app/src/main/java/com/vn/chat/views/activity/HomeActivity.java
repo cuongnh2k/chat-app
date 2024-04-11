@@ -59,7 +59,6 @@ public class HomeActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         this.init();
         this.actionView();
         loadDetailInfo();
@@ -139,17 +138,17 @@ public class HomeActivity extends CommonActivity {
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
-                            Log.d(TAG, "Stomp connection opened");
+//                            Log.d(TAG, "Stomp connection opened");
                             break;
                         case ERROR:
-                            Log.e(TAG, "Stomp connection error");
+//                            Log.e(TAG, "Stomp connection error");
                             break;
                         case CLOSED:
-                            Log.d(TAG, "Stomp connection closed");
+//                            Log.d(TAG, "Stomp connection closed");
                             resetSubscriptions();
                             break;
                         case FAILED_SERVER_HEARTBEAT:
-                            Log.d(TAG, "Stomp failed server heartbeat");
+//                            Log.d(TAG, "Stomp failed server heartbeat");
                             break;
                     }
                 });
@@ -281,6 +280,7 @@ public class HomeActivity extends CommonActivity {
 //            String fragment = data.getStringExtra(IntentUtils.KEY.FRAGMENT);
             if (null != selectedImageUri) {
                 //Upload image
+                showProgress("Upload file", "Waiting upload to server");
                 File file = new File(FileUtils.getPath(HomeActivity.this, selectedImageUri));
                 homeViewModel.postFile(file).observe(this, res -> {
                     if(res.getCode().equals(1)){
@@ -294,8 +294,12 @@ public class HomeActivity extends CommonActivity {
                             if(fragmentTarget instanceof FragmentProfile){
                                 fragmentProfile.changeAvatar(res.getData());
                             }
+                            if(fragmentTarget instanceof FragmentMessageConfig){
+                                fragmentMessageConfig.getDialogEditGroup().setImageAvatar(res.getData());
+                            }
                         }
                     }
+                    hideProgress();
                 });
             }
         }

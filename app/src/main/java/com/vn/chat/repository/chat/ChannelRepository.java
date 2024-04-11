@@ -9,6 +9,7 @@ import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
+import com.vn.chat.data.CommonDTO;
 import com.vn.chat.data.File;
 import com.vn.chat.data.Message;
 import com.vn.chat.data.User;
@@ -26,7 +27,23 @@ public class ChannelRepository {
         this.channelRequest = RetrofitRequest.instance(application, DataStatic.CHAT_URL).create(ChannelRequest.class);
     }
 
-    public LiveData<ApiResponse<Channel>> getChanel(String type){
+    public LiveData<ApiResponse<Channel>> detailChannel(String chanelId){
+        MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
+        this.channelRequest.detailChannel(chanelId).enqueue(new Callback<ApiResponse<Channel>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
+                data.setValue(RestUtils.get(response));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Channel>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<ApiResponse<Channel>> getChannel(String type){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
         this.channelRequest.getChannel(type).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
@@ -42,9 +59,25 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Channel>> postChanel(Channel channel){
+    public LiveData<ApiResponse<Channel>> postChannel(Channel channel){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
         this.channelRequest.postChannel(channel).enqueue(new Callback<ApiResponse<Channel>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
+                data.setValue(RestUtils.get(response));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Channel>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<ApiResponse<Channel>> putChannel(Channel channel){
+        MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
+        this.channelRequest.putChannel(channel.getChannelId(), channel).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -74,9 +107,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Channel>> getFriendRequest(){
+    public LiveData<ApiResponse<Channel>> getFriendRequest(String type){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.getFriendRequest("RECEIVED").enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.getFriendRequest(type).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));

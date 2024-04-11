@@ -113,6 +113,12 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             }else{
                 this.cbCheck.setVisibility(View.GONE);
             }
+
+            if(chanel.isCancel()){
+                this.btnRemove.setVisibility(View.VISIBLE);
+            }else{
+                this.btnRemove.setVisibility(View.GONE);
+            }
         }
 
         private void postReactEvent(Channel channel){
@@ -133,6 +139,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             }
             this.btnAccept.setVisibility(View.GONE);
             this.btnReject.setVisibility(View.GONE);
+            this.btnRemove.setVisibility(View.GONE);
         }
 
         public void actionView(Channel channel){

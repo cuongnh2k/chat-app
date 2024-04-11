@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.vn.chat.R;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.view.common.NonScrollListView;
 import com.vn.chat.data.Channel;
 import com.vn.chat.views.activity.HomeActivity;
@@ -35,6 +37,7 @@ public class FragmentHome extends Fragment {
     private TextView tvNoData;
     private View view;
     private List<Channel> channels;
+    private boolean isLoading = false;
 
     @SuppressLint("ValidFragment")
     public FragmentHome(HomeActivity mContext){
@@ -66,7 +69,7 @@ public class FragmentHome extends Fragment {
         channels.clear();
         channelAdapter.notifyDataSetChanged();
         context.getHomeViewModel().getLastedChannel().observe(context, res -> {
-            if(res.getCode().equals(1)) {
+            if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
@@ -104,6 +107,25 @@ public class FragmentHome extends Fragment {
             public void afterTextChanged(Editable editable) {
                 Log.d("FragmentHome", "afterTextChanged: "+editable.toString());
                 channelAdapter.getFilter().filter(editable.toString());
+            }
+        });
+
+        this.lvData.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+//                if(i+i1 == i2 && i2!=0)
+//                {
+//                    if(flag_loading == false)
+//                    {
+//                        flag_loading = true;
+//                        additems();
+//                    }
+//                }
             }
         });
     }

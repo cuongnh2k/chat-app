@@ -17,9 +17,12 @@ public class Channel {
     private String channelId;
     private String status;
     private String search;
+    private String ownerId;
     private boolean isRequest = false;
     private boolean isAccept = false;
     private boolean isCreateGroup = false;
+    private boolean isCancel = false;
+    private boolean isAdmin = true;
 
     public Channel() {
     }
@@ -162,5 +165,29 @@ public class Channel {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public boolean isCancel() {
+        return isCancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        isCancel = cancel;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

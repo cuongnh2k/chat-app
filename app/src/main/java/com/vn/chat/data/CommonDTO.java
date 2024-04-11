@@ -5,8 +5,8 @@ import okhttp3.RequestBody;
 
 public class CommonDTO {
     private String search;
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer pageNumber = 1;
+    private Integer pageSize = 1;
 
     public CommonDTO() {
     }
@@ -31,6 +31,10 @@ public class CommonDTO {
         this.pageNumber = pageNumber;
     }
 
+    public void addPageNumber(){
+        this.pageNumber++;
+    }
+
     public Integer getPageSize() {
         return pageSize;
     }
@@ -38,4 +42,5 @@ public class CommonDTO {
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
+
 }
