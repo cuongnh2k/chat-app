@@ -69,7 +69,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
         private View view;
         private ImageView ivAvatar;
         private TextView tvName, tvMail;
-        private TextViewAwsSo btnRequest, btnAccept, btnReject, btnRemove;
+        private TextViewAwsSo btnRequest, btnAccept, btnReject, btnRemove, btnChangeAdmin;
         private CheckBox cbCheck;
 
         public ViewHolder(View view){
@@ -85,6 +85,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnAccept = this.view.findViewById(R.id.btn_accept);
             this.btnReject = this.view.findViewById(R.id.btn_reject);
             this.btnRemove = this.view.findViewById(R.id.btn_remove);
+            this.btnChangeAdmin = this.view.findViewById(R.id.btn_change_admin);
             this.cbCheck = this.view.findViewById(R.id.cb_check);
         }
 
@@ -119,20 +120,26 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             }else{
                 this.btnRemove.setVisibility(View.GONE);
             }
+
+            if(chanel.isChangeAdmin()){
+                this.btnChangeAdmin.setVisibility(View.VISIBLE);
+            }else{
+                this.btnChangeAdmin.setVisibility(View.GONE);
+            }
         }
 
         private void postReactEvent(Channel channel){
             if(activity instanceof FriendRequestActivity){
                 ((FriendRequestActivity) activity).getFriendRequestViewModel().postReact(channel).observe(activity, res -> {
                     if(RestUtils.isSuccess(res)){
-                        Toast.makeText(activity, "Request successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else if (activity instanceof HomeActivity) {
                 if(((HomeActivity) activity).getFragmentTarget() == ((HomeActivity) activity).getFragmentMessageConfig()){
                     ((HomeActivity) activity).getHomeViewModel().postReactOwner(channel).observe(activity, res -> {
                         if(RestUtils.isSuccess(res)){
-                            Toast.makeText(activity, "Request successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -140,6 +147,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnAccept.setVisibility(View.GONE);
             this.btnReject.setVisibility(View.GONE);
             this.btnRemove.setVisibility(View.GONE);
+            this.btnChangeAdmin.setVisibility(View.GONE);
         }
 
         public void actionView(Channel channel){
@@ -198,6 +206,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    channel.setId(tmpChannelId);
                     channel.setStatus(DataStatic.STATUS.CANCEL);
                     postReactEvent(channel);
                 }
@@ -207,6 +216,23 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     channel.setCreateGroup(b);
+                }
+            });
+
+            this.btnChangeAdmin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(activity instanceof HomeActivity){
+                        channel.setId(tmpChannelId);
+                        ((HomeActivity) activity).getHomeViewModel().updateOwner(channel).observe(activity, res -> {
+                            if(RestUtils.isSuccess(res)){
+                                Toast.makeText(activity, "Change owner successful", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(activity, "Change owner fail", Toast.LENGTH_SHORT).show();
+                            }
+                            ((HomeActivity) activity).setFragmentHome();
+                        });
+                    }
                 }
             });
         }

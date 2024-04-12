@@ -37,6 +37,9 @@ public interface ChannelRequest {
     @GET("chat/channel/friend-request")
     Call<ApiResponse<Channel>> getFriendRequest(@Query("type") String type);
 
+    @POST("chat/channel/{channelId}/update-owner")
+    Call<ApiResponse<Channel>> updateOwner(@Path("channelId") String channelId, @Body Channel channel);
+
     @POST("chat/channel/{channelId}/react")
     Call<ApiResponse<Channel>> postReact(@Path("channelId") String channelId, @Body Channel channel);
 

@@ -107,6 +107,10 @@ public class HomeViewModel extends AndroidViewModel {
         return this.channelRepository.postReactOwner(channel);
     }
 
+    public LiveData<ApiResponse<Channel>> updateOwner(Channel channel){
+        return this.channelRepository.updateOwner(channel);
+    }
+
     public LiveData<ApiResponse<Device>> logout(){
         Device d = new Device();
         d.setDeviceIds(Arrays.asList(DataStatic.AUTHOR.DEVICE_ID));

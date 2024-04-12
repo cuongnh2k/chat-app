@@ -77,7 +77,7 @@ public class ChannelRepository {
 
     public LiveData<ApiResponse<Channel>> putChannel(Channel channel){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.putChannel(channel.getChannelId(), channel).enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.putChannel(channel.getId(), channel).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -110,6 +110,22 @@ public class ChannelRepository {
     public LiveData<ApiResponse<Channel>> getFriendRequest(String type){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
         this.channelRequest.getFriendRequest(type).enqueue(new Callback<ApiResponse<Channel>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
+                data.setValue(RestUtils.get(response));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Channel>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<ApiResponse<Channel>> updateOwner(Channel channel){
+        MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
+        this.channelRequest.updateOwner(channel.getId(), channel).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));

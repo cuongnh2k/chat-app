@@ -22,7 +22,8 @@ public class Channel {
     private boolean isAccept = false;
     private boolean isCreateGroup = false;
     private boolean isCancel = false;
-    private boolean isAdmin = true;
+    private boolean isAdmin = false;
+    private boolean isChangeAdmin = false;
 
     public Channel() {
     }
@@ -48,6 +49,8 @@ public class Channel {
     }
 
     public String getId() {
+        if(id == null && channelId != null) return channelId;
+        else if(id != null && channelId == null) return id;
         return id;
     }
 
@@ -189,5 +192,13 @@ public class Channel {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean isChangeAdmin() {
+        return isChangeAdmin;
+    }
+
+    public void setChangeAdmin(boolean changeAdmin) {
+        isChangeAdmin = changeAdmin;
     }
 }

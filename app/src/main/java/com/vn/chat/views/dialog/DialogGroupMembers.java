@@ -58,6 +58,7 @@ public class DialogGroupMembers {
         this.lvMember = dialog.findViewById(R.id.lv_data);
         this.tvNoData = dialog.findViewById(R.id.tv_no_data);
         this.contactAdapter = new ContactAdapter(activity, this.members);
+        this.contactAdapter.setTmpChannelId(channel.getId());
         this.lvMember.setAdapter(this.contactAdapter);
     }
 
@@ -71,8 +72,11 @@ public class DialogGroupMembers {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for (User user : res.getItems()){
-                        Channel c = new Channel(user.getId(), user.getName(), user.getEmail(), false);
-                        c.setAdmin(channel.isAdmin());
+                        Channel c = new Channel(user.getUserId(), user.getName(), user.getEmail(), false);
+                        if(!user.getUserId().equals(channel.getOwnerId()) && channel.isAdmin()){
+                            c.setChangeAdmin(channel.isAdmin());
+                            c.setCancel(true);
+                        }
                         members.add(c);
                     }
                     this.tvNoData.setVisibility(View.GONE);
