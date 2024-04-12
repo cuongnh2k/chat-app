@@ -83,10 +83,10 @@ public class File {
     public MultipartBody.Part getBodyFile(){
         if(this.fileUri != null && this.fileUri.length() > 0){
             java.io.File file = new java.io.File(this.fileUri);
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             return MultipartBody.Part.createFormData("file", file.getName(), requestFile);
         }else{
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), "");
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "");
             return MultipartBody.Part.createFormData("file", "", requestFile);
         }
     }
