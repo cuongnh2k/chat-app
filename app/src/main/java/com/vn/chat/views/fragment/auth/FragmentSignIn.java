@@ -75,10 +75,10 @@ public class FragmentSignIn extends Fragment {
                     return;
                 }else{
                     //TODO: Request login auth
-                    if(!StringUtils.validatorEmail(username)){
-                        Toast.makeText(context, "Email format error", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+//                    if(!StringUtils.validatorEmail(username)){
+//                        Toast.makeText(context, "Email format error", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
 
                     if(!StringUtils.validatorPassword(password)){
                         Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
