@@ -66,10 +66,10 @@ public class FragmentSignIn extends Fragment {
         this.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String username = etUsername.getText().toString().trim();
-//                String password = etPassword.getText().toString().trim();
-                String username = "tuyen.cntt.k13a@gmail.com";
-                String password = "Tuyen321!";
+                String username = etUsername.getText().toString().trim();
+                String password = etPassword.getText().toString().trim();
+//                String username = "tuyen.cntt.k13a@gmail.com";
+//                String password = "Tuyen321!";
                 ViewUtils.hideKeyboard(context);
                 if(username.length() == 0 || password.length() == 0){
                     Toast.makeText(context, "Username and password not empty", Toast.LENGTH_SHORT).show();
@@ -89,7 +89,6 @@ public class FragmentSignIn extends Fragment {
                     context.getAuthViewModel().login(new User(username, password)).observe(context, res -> {
                         if(RestUtils.isSuccess(res)) {
                             Device d = (Device) res.getData();
-
                             DataStatic.AUTHOR.ACCESS_TOKEN = d.getAccessToken();
                             DataStatic.AUTHOR.REFRESH_TOKEN = d.getRefreshToken();
                             DataStatic.AUTHOR.DEVICE_ID = d.getDeviceId();
