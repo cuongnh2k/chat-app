@@ -79,6 +79,7 @@ public class FragmentMessageConfig extends Fragment {
             btnAddToGroup.setVisibility(View.GONE);
         }
 
+
         if(channel.isAdmin() || !channel.getType().equals("GROUP")){
             this.btnOutGroup.setVisibility(View.GONE);
         }else{
@@ -86,8 +87,10 @@ public class FragmentMessageConfig extends Fragment {
         }
 
         if(channel.isAdmin() && channel.getType().equals("GROUP")){
+            btnRequestList.setVisibility(View.VISIBLE);
             btnEdit.setVisibility(View.VISIBLE);
         }else{
+            btnRequestList.setVisibility(View.GONE);
             btnEdit.setVisibility(View.GONE);
         }
     }
