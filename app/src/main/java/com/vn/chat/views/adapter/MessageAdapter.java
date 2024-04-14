@@ -15,16 +15,17 @@ import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.ImageUtils;
 import com.vn.chat.data.Message;
+import com.vn.chat.views.activity.HomeActivity;
 
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private static final Integer RES_ID_LEFT = R.layout.item_message_info_left;
     private static final Integer RES_ID_RIGHT = R.layout.item_message_info_right;
-    private Activity activity;
+    private HomeActivity activity;
     private List<Message> list;
 
-    public MessageAdapter(@NonNull Activity activity, @NonNull List<Message> list) {
+    public MessageAdapter(@NonNull HomeActivity activity, @NonNull List<Message> list) {
         this.activity = activity;
         this.list = list;
     }
@@ -57,6 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Message m0 = (position > 0) ? list.get(position-1) : null;
         Message m1 = list.get(position);
         holder.showData(m0, m1);
+        holder.actionView(m1);
     }
 
     @Override
@@ -82,6 +84,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.ivMessageImg = this.view.findViewById(R.id.iv_message_img);
             this.ivThumb = this.view.findViewById(R.id.iv_thumb);
             this.cvThumb = this.view.findViewById(R.id.cardView);
+        }
+
+        private void actionView(Message message){
+            this.view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    activity.getFragmentMessage().setTargetInfo(message);
+                    return true;
+                }
+            });
         }
 
         public void showData(Message m0, Message m1){

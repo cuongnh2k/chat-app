@@ -1,17 +1,16 @@
 package com.vn.chat.data;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-
-public class CommonDTO {
+public class SearchDTO {
     private String search;
-    private Integer pageNumber = 1;
-    private Integer pageSize = 1;
+    private String type;
+    private Integer pageNumber = 0;
+    private Integer pageSize = 50;
+    private String sort;
 
-    public CommonDTO() {
+    public SearchDTO() {
     }
 
-    public CommonDTO(String search) {
+    public SearchDTO(String search) {
         this.search = search;
     }
 
@@ -23,8 +22,20 @@ public class CommonDTO {
         this.search = search;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Integer getPageNumber() {
         return pageNumber;
+    }
+
+    public void addPage(){
+        this.pageNumber++;
     }
 
     public void setPageNumber(Integer pageNumber) {
@@ -43,4 +54,11 @@ public class CommonDTO {
         this.pageSize = pageSize;
     }
 
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
 }

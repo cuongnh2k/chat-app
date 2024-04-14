@@ -9,7 +9,7 @@ import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.data.File;
 import com.vn.chat.data.Message;
 import com.vn.chat.data.User;
@@ -43,9 +43,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Channel>> getChannel(String type){
+    public LiveData<ApiResponse<Channel>> getChannel(SearchDTO search){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.getChannel(type).enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.getChannel(search.getType(), search.getPageNumber(), search.getPageSize()).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -91,9 +91,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Channel>> getLatestChannel(){
+    public LiveData<ApiResponse<Channel>> getLatestChannel(SearchDTO searchDTO){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.getLatestChannel().enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.getLatestChannel(searchDTO.getPageNumber(), searchDTO.getPageSize()).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -107,9 +107,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Channel>> getFriendRequest(String type){
+    public LiveData<ApiResponse<Channel>> getFriendRequest(SearchDTO search){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.getFriendRequest(type).enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.getFriendRequest(search.getType(), search.getPageNumber(), search.getPageSize()).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -155,9 +155,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<Message>> getMessage(Message message){
+    public LiveData<ApiResponse<Message>> getMessage(Message message, SearchDTO searchDTO){
         MutableLiveData<ApiResponse<Message>> data = new MutableLiveData<>();
-        this.channelRequest.getMessage(message.getChannelId()).enqueue(new Callback<ApiResponse<Message>>() {
+        this.channelRequest.getMessage(message.getChannelId(), searchDTO.getPageNumber(), searchDTO.getPageSize()).enqueue(new Callback<ApiResponse<Message>>() {
             @Override
             public void onResponse(Call<ApiResponse<Message>> call, Response<ApiResponse<Message>> response) {
                 data.setValue(RestUtils.get(response));
@@ -187,9 +187,9 @@ public class ChannelRepository {
         return data;
     }
 
-    public LiveData<ApiResponse<File>> getFiles(Channel channel){
+    public LiveData<ApiResponse<File>> getFiles(Channel channel, SearchDTO search){
         MutableLiveData<ApiResponse<File>> data = new MutableLiveData<>();
-        this.channelRequest.getFiles(channel.getId()).enqueue(new Callback<ApiResponse<File>>() {
+        this.channelRequest.getFiles(channel.getId(), search.getPageNumber(), search.getPageSize()).enqueue(new Callback<ApiResponse<File>>() {
             @Override
             public void onResponse(Call<ApiResponse<File>> call, Response<ApiResponse<File>> response) {
                 data.setValue(RestUtils.get(response));

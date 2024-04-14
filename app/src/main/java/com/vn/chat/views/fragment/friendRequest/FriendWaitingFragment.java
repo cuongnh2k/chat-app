@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,7 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.FriendRequestActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
 
@@ -30,6 +33,9 @@ public class FriendWaitingFragment extends Fragment {
     private List<Channel> channels;
     private ContactAdapter contactAdapter;
 
+    private SearchDTO search = new SearchDTO();
+    private boolean isOver = false, isLoad = false;
+
     public FriendWaitingFragment(FriendRequestActivity activity) {
         this.activity = activity;
     }
@@ -39,11 +45,12 @@ public class FriendWaitingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
-        this.loadRequestList();
+        this.actionView();
         return this.view;
     }
 
     private void init(){
+        this.search.setType(DataStatic.TYPE.SENT);
         this.tvNoData = this.view.findViewById(R.id.tv_no_data);
         this.lvData = this.view.findViewById(R.id.lv_data);
         this.channels = new ArrayList<>();
@@ -51,23 +58,53 @@ public class FriendWaitingFragment extends Fragment {
         this.lvData.setAdapter(this.contactAdapter);
     }
 
-    private void loadRequestList(){
-        this.channels.clear();
-        activity.getFriendRequestViewModel().getFriendRequest(DataStatic.TYPE.SENT).observe(activity, res -> {
-            tvNoData.setVisibility(View.VISIBLE);
-            lvData.setVisibility(View.GONE);
-            if(res.getCode().equals(1)){
-                for(Channel channel : res.getItems()){
-                    channel.setAccept(false);
-                    channel.setCancel(true);
-                    channels.add(channel);
-                }
-                contactAdapter.notifyDataSetChanged();
-                if(channels.size() > 0){
-                    tvNoData.setVisibility(View.GONE);
-                    lvData.setVisibility(View.VISIBLE);
+    private void actionView(){
+        this.lvData.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount){
+                    // here you have reached end of list, load more data
+                    if (!isOver) {
+                        if (!isLoad) {
+                            addMoreData();
+                        }
+                    }
                 }
             }
+        });
+    }
+
+    private void addMoreData(){
+        isLoad = true;
+        if(search.getPageNumber().equals(0)){
+            lvData.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        activity.getFriendRequestViewModel().getFriendRequest(this.search).observe(activity, res -> {
+            if(RestUtils.isSuccess(res)){
+                if(res.getItems().size() > 0){
+                    lvData.setVisibility(View.VISIBLE);
+                    tvNoData.setVisibility(View.GONE);
+                    for(Channel channel : res.getItems()){
+                        channel.setAccept(false);
+                        channel.setCancel(true);
+                        channels.add(channel);
+                    }
+                    contactAdapter.notifyDataSetChanged();
+                }else{
+                    isOver = true;
+                }
+            }else{
+                isOver = true;
+            }
+            search.addPage();
+            isLoad = false;
         });
     }
 }

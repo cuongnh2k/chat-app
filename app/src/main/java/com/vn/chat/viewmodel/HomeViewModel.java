@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.data.Device;
 import com.vn.chat.data.File;
 import com.vn.chat.data.Message;
@@ -40,8 +40,8 @@ public class HomeViewModel extends AndroidViewModel {
         return this.channelRepository.detailChannel(chanelId);
     }
 
-    public LiveData<ApiResponse<Channel>> getChannel(String type){
-        return this.channelRepository.getChannel(type);
+    public LiveData<ApiResponse<Channel>> getChannel(SearchDTO search){
+        return this.channelRepository.getChannel(search);
     }
 
     public LiveData<ApiResponse<Channel>> postChannel(Channel channel){
@@ -52,11 +52,11 @@ public class HomeViewModel extends AndroidViewModel {
         return this.channelRepository.putChannel(channel);
     }
 
-    public LiveData<ApiResponse<Channel>> getLastedChannel(){
-        return this.channelRepository.getLatestChannel();
+    public LiveData<ApiResponse<Channel>> getLastedChannel(SearchDTO searchDTO){
+        return this.channelRepository.getLatestChannel(searchDTO);
     }
 
-    public LiveData<ApiResponse<User>> findFriend(CommonDTO commonDTO){
+    public LiveData<ApiResponse<User>> findFriend(SearchDTO commonDTO){
         return this.userRepository.getUser(commonDTO);
     }
 
@@ -70,8 +70,8 @@ public class HomeViewModel extends AndroidViewModel {
     /**
      * @Message
      * */
-    public LiveData<ApiResponse<Message>> getMessage(Message message){
-        return this.channelRepository.getMessage(message);
+    public LiveData<ApiResponse<Message>> getMessage(Message message, SearchDTO searchDTO){
+        return this.channelRepository.getMessage(message, searchDTO);
     }
 
     public LiveData<ApiResponse<Message>> postMessage(Message message){
@@ -83,8 +83,8 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<ApiResponse<File>> postFile(File file){
         return this.fileRepository.upload(file);
     }
-    public LiveData<ApiResponse<File>> getFiles(Channel channel){
-        return this.channelRepository.getFiles(channel);
+    public LiveData<ApiResponse<File>> getFiles(Channel channel, SearchDTO search){
+        return this.channelRepository.getFiles(channel, search);
     }
 
     /**

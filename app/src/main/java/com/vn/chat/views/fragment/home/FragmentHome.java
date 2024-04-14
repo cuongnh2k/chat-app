@@ -18,8 +18,8 @@ import androidx.annotation.Nullable;
 
 import com.vn.chat.R;
 import com.vn.chat.common.utils.RestUtils;
-import com.vn.chat.common.view.common.NonScrollListView;
 import com.vn.chat.data.Channel;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ChannelAdapter;
 
@@ -36,8 +36,10 @@ public class FragmentHome extends Fragment {
     private EditText etSearch;
     private TextView tvNoData;
     private View view;
-    private List<Channel> channels;
-    private boolean isLoading = false;
+    private List<Channel> channels = new ArrayList<>();
+
+    private SearchDTO search = new SearchDTO();;
+    private boolean isOver = false, isLoad = false;
 
     @SuppressLint("ValidFragment")
     public FragmentHome(HomeActivity mContext){
@@ -49,13 +51,11 @@ public class FragmentHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
-        this.loadLastedChannel();
         this.actionView();
         return this.view;
     }
 
     private void init(){
-        this.channels = new ArrayList<>();
         this.etSearch = view.findViewById(R.id.et_search);
         this.tvNoData = view.findViewById(R.id.tv_no_data);
         this.lvData = view.findViewById(R.id.lv_data);
@@ -63,19 +63,28 @@ public class FragmentHome extends Fragment {
         this.lvData.setAdapter(this.channelAdapter);
     }
 
-    private void loadLastedChannel(){
-        lvData.setVisibility(View.GONE);
-        tvNoData.setVisibility(View.VISIBLE);
-        channels.clear();
-        channelAdapter.notifyDataSetChanged();
-        context.getHomeViewModel().getLastedChannel().observe(context, res -> {
+    private void addMoreData(){
+        Log.d("FragmentHome", "addMoreData: "+search.getPageNumber());
+        isLoad = true;
+        if(search.getPageNumber().equals(0)){
+            lvData.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        context.getHomeViewModel().getLastedChannel(search).observe(context, res -> {
             if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
-                    channelAdapter.notifyDataSetChanged(res.getItems());
+                    channels.addAll(res.getItems());
+                    channelAdapter.notifyDataSetChanged();
+                }else{
+                    isOver = true;
                 }
+            }else{
+                isOver = true;
             }
+            search.addPage();
+            isLoad = false;
         });
     }
 
@@ -106,7 +115,6 @@ public class FragmentHome extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 Log.d("FragmentHome", "afterTextChanged: "+editable.toString());
-                channelAdapter.getFilter().filter(editable.toString());
             }
         });
 
@@ -117,15 +125,16 @@ public class FragmentHome extends Fragment {
             }
 
             @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-//                if(i+i1 == i2 && i2!=0)
-//                {
-//                    if(flag_loading == false)
-//                    {
-//                        flag_loading = true;
-//                        additems();
-//                    }
-//                }
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount){
+                    // here you have reached end of list, load more data
+                    if (!isOver) {
+                        if (!isLoad) {
+                            addMoreData();
+                        }
+                    }
+                }
             }
         });
     }

@@ -30,7 +30,7 @@ public class AuthViewModel extends AndroidViewModel {
         this.deviceRepository.refresh(getApplication());
     }
 
-    public LiveData<ApiResponse<Device>> login(User user){
+    public LiveData<ApiResponse<Object>> login(User user){
         return this.authRepository.login(user);
     }
 

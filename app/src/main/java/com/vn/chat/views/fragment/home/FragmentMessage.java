@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
@@ -23,6 +24,7 @@ import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.File;
 import com.vn.chat.data.Message;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.MessageAdapter;
 
@@ -40,10 +42,12 @@ public class FragmentMessage extends Fragment {
     private ImageView ivSend, ivAttachFile;
     private TextView tvFileInfo, tvTargetInfo;
     private TextViewAwsSo twaBtnRemoveFile, twaBtnRemoveTarget;
+    private SwipeRefreshLayout srlLayout;
     private View view;
     private List<Message> messages;
     private Channel channel;
     private Message message = new Message();
+    private SearchDTO searchDTO = new SearchDTO();
 
     @SuppressLint("ValidFragment")
     public FragmentMessage(HomeActivity mContext, Channel channel){
@@ -61,12 +65,13 @@ public class FragmentMessage extends Fragment {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
         this.loadChanelDetail();
-        this.loadMessage();
+        this.loadMessage(true);
         this.actionView();
         return this.view;
     }
 
     private void init(){
+        searchDTO.setPageSize(20);
         activity.getToolbar().getTwaBtnConfig().setVisibility(View.VISIBLE);
         activity.getToolbar().getTwaBtnBack().setVisibility(View.VISIBLE);
         activity.getToolbar().setNamePage(channel.getName());
@@ -82,20 +87,21 @@ public class FragmentMessage extends Fragment {
         this.messageAdapter = new MessageAdapter(activity, messages);
         this.rvData.setAdapter(this.messageAdapter);
         this.rvData.setLayoutManager(new LinearLayoutManager(activity));
+        this.srlLayout = view.findViewById(R.id.srl_layout);
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void loadMessage(){
-        messages.clear();
-        messageAdapter.notifyDataSetChanged();
-        activity.getHomeViewModel().getMessage(new Message(this.channel.getId())).observe(activity, res -> {
+    private void loadMessage(boolean isScrollEnd){
+        activity.getHomeViewModel().getMessage(new Message(this.channel.getId()), searchDTO).observe(activity, res -> {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for(Message message : res.getItems()){
                         messages.add(0, message);
                     }
                     messageAdapter.notifyDataSetChanged();
-                    rvData.scrollToPosition(messages.size() - 1);
+                    if(isScrollEnd) rvData.scrollToPosition(messages.size() - 1);
+                    if(srlLayout.isRefreshing()) srlLayout.setRefreshing(false);
+                    searchDTO.addPage();
                 }
             }
         });
@@ -161,7 +167,7 @@ public class FragmentMessage extends Fragment {
         twaBtnRemoveTarget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                setTargetInfo(null);
             }
         });
 
@@ -169,6 +175,13 @@ public class FragmentMessage extends Fragment {
             @Override
             public void onClick(View view) {
                 activity.setFragmentMessageConfig(channel);
+            }
+        });
+
+        srlLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadMessage(false);
             }
         });
     }

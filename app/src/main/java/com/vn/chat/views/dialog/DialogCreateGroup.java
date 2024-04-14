@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -20,11 +19,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.vn.chat.R;
 import com.vn.chat.common.utils.ImageUtils;
 import com.vn.chat.common.utils.IntentUtils;
-import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
 import com.vn.chat.data.File;
-import com.vn.chat.data.User;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
 

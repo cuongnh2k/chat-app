@@ -18,7 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.vn.chat.R;
 import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
@@ -70,14 +70,13 @@ public class DialogAddUser {
             @Override
             public void onClick(View view) {
                 contacts.clear();
-                activity.getHomeViewModel().findFriend(new CommonDTO(etSearch.getText().toString())).observe(activity, res -> {
+                activity.getHomeViewModel().findFriend(new SearchDTO(etSearch.getText().toString())).observe(activity, res -> {
                     lvContact.setVisibility(View.GONE);
                     tvNoData.setVisibility(View.VISIBLE);
                     if(res.getCode().equals(1)) {
                         if(res.getItems().size() > 0){
                             for(User user : res.getItems()){
                                 contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), true));
-                                Toast.makeText(activity, "Request successful", Toast.LENGTH_SHORT).show();
                             }
                             contactAdapter.notifyDataSetChanged();
                             lvContact.setVisibility(View.VISIBLE);
@@ -88,6 +87,7 @@ public class DialogAddUser {
             }
         });
     }
+
 
     public void show(){
         this.dialog.show();

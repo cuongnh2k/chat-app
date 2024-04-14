@@ -1,46 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/view_search"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/bg_et_comment"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        android:text="Group"
+        android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:background="@null"
-            android:gravity="center|left"
-            android:hint="Tìm kiếm"
-            android:paddingLeft="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="13sp"
-            android:textStyle="italic" />
-
-        <com.vn.chat.common.view.icon.TextViewAwsSo
-            android:id="@+id/btn_search"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:text="@string/ico_search"
-            android:textColor="@color/color_blue"
-            android:textSize="15sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_no_data"
@@ -53,7 +25,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/view_search" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <ListView
         android:id="@+id/lv_data"
@@ -65,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/view_search" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

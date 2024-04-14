@@ -23,6 +23,7 @@ import com.vn.chat.data.File;
 import com.vn.chat.viewmodel.HomeViewModel;
 import com.vn.chat.views.fragment.home.FragmentContact;
 import com.vn.chat.views.fragment.home.FragmentGallery;
+import com.vn.chat.views.fragment.home.FragmentGroup;
 import com.vn.chat.views.fragment.home.FragmentHome;
 import com.vn.chat.views.fragment.home.FragmentMessage;
 import com.vn.chat.views.fragment.home.FragmentMessageConfig;
@@ -48,12 +49,13 @@ public class HomeActivity extends CommonActivity {
     private HomeViewModel homeViewModel;
     private FragmentHome fragmentHome;
     private FragmentContact fragmentContact;
+    private FragmentGroup fragmentGroup;
     private FragmentProfile fragmentProfile;
     private FragmentMessage fragmentMessage;
     private FragmentMessageConfig fragmentMessageConfig;
     private FragmentGallery fragmentGallery;
     private Fragment fragmentTarget;
-    private TextViewAwsRe icoChanel, icoContact, icoProfile;
+    private TextViewAwsRe icoChanel, icoContact, icoGroup, icoProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class HomeActivity extends CommonActivity {
         this.homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
         this.toolbar = new MyToolbar(HomeActivity.this);
         this.icoChanel = findViewById(R.id.twa_btn_chanel);
+        this.icoGroup = findViewById(R.id.twa_btn_group);
         this.icoContact = findViewById(R.id.twa_btn_contact);
         this.icoProfile = findViewById(R.id.twa_btn_profile);
     }
@@ -96,6 +99,13 @@ public class HomeActivity extends CommonActivity {
             @Override
             public void onClick(View view) {
                 setFragmentContact();
+            }
+        });
+
+        this.icoGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFragmentGroup();
             }
         });
 
@@ -204,6 +214,7 @@ public class HomeActivity extends CommonActivity {
     private void selectorMenu(TextViewAwsRe tvSelected){
         this.icoChanel.setTextColor(getResources().getColor(R.color.black));
         this.icoContact.setTextColor(getResources().getColor(R.color.black));
+        this.icoGroup.setTextColor(getResources().getColor(R.color.black));
         this.icoProfile.setTextColor(getResources().getColor(R.color.black));
         tvSelected.setTextColor(getResources().getColor(R.color.color_blue));
     }
@@ -212,14 +223,13 @@ public class HomeActivity extends CommonActivity {
         this.icoChanel.setVisibility(v);
         this.icoContact.setVisibility(v);
         this.icoProfile.setVisibility(v);
+        this.icoGroup.setVisibility(v);
     }
 
     public void setFragmentHome(){
         selectorMenu(icoChanel);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if(fragmentHome == null){
-            fragmentHome = new FragmentHome(HomeActivity.this);
-        }
+        fragmentHome = new FragmentHome(HomeActivity.this);
         fragmentTarget = fragmentHome;
         transaction.replace(R.id.layout_content, fragmentHome).addToBackStack(DataStatic.STACK_APP);
         transaction.commitAllowingStateLoss();
@@ -228,11 +238,18 @@ public class HomeActivity extends CommonActivity {
     public void setFragmentContact(){
         selectorMenu(icoContact);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if(fragmentContact == null){
-            fragmentContact = new FragmentContact(HomeActivity.this);
-        }
+        fragmentContact = new FragmentContact(HomeActivity.this);
         fragmentTarget = fragmentContact;
         transaction.replace(R.id.layout_content, fragmentContact).addToBackStack(DataStatic.STACK_APP);
+        transaction.commitAllowingStateLoss();
+    }
+
+    public void setFragmentGroup(){
+        selectorMenu(icoGroup);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        fragmentGroup = new FragmentGroup(HomeActivity.this);
+        fragmentTarget = fragmentGroup;
+        transaction.replace(R.id.layout_content, fragmentGroup).addToBackStack(DataStatic.STACK_APP);
         transaction.commitAllowingStateLoss();
     }
 
@@ -329,4 +346,9 @@ public class HomeActivity extends CommonActivity {
         return fragmentMessageConfig;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stomp.disconnect();
+    }
 }

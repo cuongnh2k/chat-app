@@ -30,8 +30,8 @@ public class AuthRepository {
         this.authRequest = RetrofitRequest.instance(application, DataStatic.COMMON_URL).create(AuthRequest.class);
     }
     
-    public LiveData<ApiResponse<Device>> login(User user){
-        MutableLiveData<ApiResponse<Device>> data = new MutableLiveData<>();
+    public LiveData<ApiResponse<Object>> login(User user){
+        MutableLiveData<ApiResponse<Object>> data = new MutableLiveData<>();
         try{
             this.authRequest.login(user).enqueue(new Callback<ApiResponse<Device>>() {
                 @Override

@@ -1,6 +1,9 @@
-package com.vn.chat.views.fragment.friendRequest;
+package com.vn.chat.views.fragment.home;
 
+import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,53 +11,53 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.vn.chat.R;
-import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.SearchDTO;
-import com.vn.chat.views.activity.FriendRequestActivity;
+import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendRequestFragment extends Fragment {
+@SuppressLint("ValidFragment")
+public class FragmentGroup extends Fragment {
 
-    private static final Integer RES_ID = R.layout.fragment_friend_request;
-    private FriendRequestActivity activity;
+    private static final Integer RES_ID = R.layout.fragment_group;
+    private HomeActivity context;
     private View view;
-    private TextView tvNoData;
-    private ListView lvData;
-    private List<Channel> channels;
     private ContactAdapter contactAdapter;
+    private ListView lvData;
+    private TextView tvNoData;
+    private List<Channel> channels;
 
     private SearchDTO search = new SearchDTO();
     private boolean isOver = false, isLoad = false;
 
-    public FriendRequestFragment(FriendRequestActivity activity) {
-        this.activity = activity;
+    @SuppressLint("ValidFragment")
+    public FragmentGroup(HomeActivity mContext){
+        this.context = mContext;
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
         this.actionView();
         return this.view;
     }
 
-    private void init(){
-        this.search.setType(DataStatic.TYPE.RECEIVED);
-        this.tvNoData = this.view.findViewById(R.id.tv_no_data);
-        this.lvData = this.view.findViewById(R.id.lv_data);
+    public void init(){
+        this.search.setType("GROUP");
+
         this.channels = new ArrayList<>();
-        this.contactAdapter = new ContactAdapter(activity, this.channels);
+        this.lvData = view.findViewById(R.id.lv_data);
+        this.tvNoData = view.findViewById(R.id.tv_no_data);
+        this.contactAdapter = new ContactAdapter(context, channels);
         this.lvData.setAdapter(this.contactAdapter);
     }
 
@@ -64,15 +67,12 @@ public class FriendRequestFragment extends Fragment {
             lvData.setVisibility(View.GONE);
             tvNoData.setVisibility(View.VISIBLE);
         }
-        activity.getFriendRequestViewModel().getFriendRequest(this.search).observe(activity, res -> {
-            if(RestUtils.isSuccess(res)){
+        context.getHomeViewModel().getChannel(this.search).observe(context, res -> {
+            if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
+                    channels.addAll(res.getItems());
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
-                    for(Channel channel : res.getItems()){
-                        channel.setAccept(true);
-                        channels.add(channel);
-                    }
                     contactAdapter.notifyDataSetChanged();
                 }else{
                     isOver = true;
