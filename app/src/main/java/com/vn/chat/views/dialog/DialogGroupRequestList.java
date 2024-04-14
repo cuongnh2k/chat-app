@@ -58,6 +58,7 @@ public class DialogGroupRequestList {
         this.lvMember = dialog.findViewById(R.id.lv_data);
         this.tvNoData = dialog.findViewById(R.id.tv_no_data);
         this.contactAdapter = new ContactAdapter(activity, this.requests);
+        this.contactAdapter.setTmpChannelId(channel.getId());
         this.lvMember.setAdapter(this.contactAdapter);
     }
 
@@ -71,7 +72,7 @@ public class DialogGroupRequestList {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for (User user : res.getItems()){
-                        requests.add(new Channel(user.getId(), user.getName(), user.getEmail(), false, true));
+                        requests.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), false, true));
                     }
                     this.tvNoData.setVisibility(View.GONE);
                     this.lvMember.setVisibility(View.VISIBLE);

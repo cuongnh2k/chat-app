@@ -36,14 +36,15 @@ public class FragmentHome extends Fragment {
     private EditText etSearch;
     private TextView tvNoData;
     private View view;
-    private List<Channel> channels = new ArrayList<>();
+    private static List<Channel> channels = new ArrayList<>();
 
-    private SearchDTO search = new SearchDTO();;
+    private SearchDTO search = new SearchDTO();
     private boolean isOver = false, isLoad = false;
 
     @SuppressLint("ValidFragment")
     public FragmentHome(HomeActivity mContext){
         this.context = mContext;
+        this.channels = new ArrayList<>();
     }
 
     @Nullable

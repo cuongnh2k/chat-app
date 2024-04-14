@@ -18,9 +18,10 @@ public class Channel {
     private String status;
     private String search;
     private String ownerId;
+    private boolean isCreateGroup = false;
     private boolean isRequest = false;
     private boolean isAccept = false;
-    private boolean isCreateGroup = false;
+    private boolean haveCheckbox = false;
     private boolean isCancel = false;
     private boolean isAdmin = false;
     private boolean isChangeAdmin = false;
@@ -154,12 +155,12 @@ public class Channel {
         this.status = status;
     }
 
-    public boolean isCreateGroup() {
-        return isCreateGroup;
+    public boolean isHaveCheckbox() {
+        return haveCheckbox;
     }
 
-    public void setCreateGroup(boolean createGroup) {
-        isCreateGroup = createGroup;
+    public void setHaveCheckbox(boolean haveCheckbox) {
+        this.haveCheckbox = haveCheckbox;
     }
 
     public String getSearch() {
@@ -200,5 +201,13 @@ public class Channel {
 
     public void setChangeAdmin(boolean changeAdmin) {
         isChangeAdmin = changeAdmin;
+    }
+
+    public boolean isCreateGroup() {
+        return isCreateGroup;
+    }
+
+    public void setCreateGroup(boolean createGroup) {
+        isCreateGroup = createGroup;
     }
 }

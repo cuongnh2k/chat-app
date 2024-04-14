@@ -68,6 +68,8 @@ public class FragmentSignIn extends Fragment {
             public void onClick(View view) {
                 String username = etUsername.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
+//                String username = "emtuyenlc2012@gmail.com";
+//                String password = "Tuyen321!!";
 //                String username = "tuyen.cntt.k13a@gmail.com";
 //                String password = "Tuyen321!";
                 ViewUtils.hideKeyboard(context);
@@ -93,7 +95,7 @@ public class FragmentSignIn extends Fragment {
                             lvData2.observe(context, data2 -> {
                                 if (data2.getCode() == -10305) {
                                     String deviceId = (String) data2.getData().get("deviceId");
-                                    context.setFragmentDeviceConfirm(deviceId);
+                                    context.setFragmentDeviceConfirm(d, deviceId);
                                 } else {
                                     DataStatic.AUTHOR.ACCESS_TOKEN = d.getAccessToken();
                                     DataStatic.AUTHOR.REFRESH_TOKEN = d.getRefreshToken();

@@ -217,6 +217,9 @@ public class HomeActivity extends CommonActivity {
     }
 
     public void setFragmentHome(){
+        visibleMenu(View.VISIBLE);
+        toolbar.getTwaBtnBack().setVisibility(View.GONE);
+        toolbar.setNamePage(getResources().getString(R.string.app_name));
         selectorMenu(icoChanel);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         fragmentHome = new FragmentHome(HomeActivity.this);
@@ -292,16 +295,16 @@ public class HomeActivity extends CommonActivity {
                 homeViewModel.postFile(file).observe(this, res -> {
                     if(res.getCode().equals(1)){
                         if(fragmentTarget != null){
-                            if(fragmentTarget instanceof FragmentMessage){
+                            if(fragmentTarget == fragmentMessage){
                                 fragmentMessage.setFileInfo(res.getData());
                             }
-                            if(fragmentTarget instanceof FragmentContact){
+                            if(fragmentTarget == fragmentContact){
                                 fragmentContact.getDialogCreateGroup().setImageAvatar(res.getData());
                             }
-                            if(fragmentTarget instanceof FragmentProfile){
+                            if(fragmentTarget == fragmentProfile){
                                 fragmentProfile.changeAvatar(res.getData());
                             }
-                            if(fragmentTarget instanceof FragmentMessageConfig){
+                            if(fragmentTarget == fragmentMessageConfig){
                                 fragmentMessageConfig.getDialogEditGroup().setImageAvatar(res.getData());
                             }
                         }

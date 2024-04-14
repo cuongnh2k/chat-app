@@ -37,6 +37,7 @@ public class FragmentMessageConfig extends Fragment {
     private View view;
     private Channel channel;
     private DialogEditGroup dialogEditGroup;
+    private DialogGroupMembers dialogGroupMembers;
 
     @SuppressLint("ValidFragment")
     public FragmentMessageConfig(HomeActivity mContext, Channel channel){
@@ -67,11 +68,6 @@ public class FragmentMessageConfig extends Fragment {
         activity.getToolbar().getTwaBtnConfig().setVisibility(View.GONE);
         activity.getToolbar().getTwaSearch().setVisibility(View.GONE);
 
-        if(channel.isAdmin() || !channel.getType().equals("GROUP")){
-            this.btnOutGroup.setVisibility(View.GONE);
-        }else{
-            this.btnOutGroup.setVisibility(View.VISIBLE);
-        }
     }
 
     private void loadData(){
@@ -81,6 +77,17 @@ public class FragmentMessageConfig extends Fragment {
             btnMembers.setVisibility(View.GONE);
             btnRequestList.setVisibility(View.GONE);
             btnAddToGroup.setVisibility(View.GONE);
+        }
+
+        if(channel.isAdmin() || !channel.getType().equals("GROUP")){
+            this.btnOutGroup.setVisibility(View.GONE);
+        }else{
+            this.btnOutGroup.setVisibility(View.VISIBLE);
+        }
+
+        if(channel.isAdmin() && channel.getType().equals("GROUP")){
+            btnEdit.setVisibility(View.VISIBLE);
+        }else{
             btnEdit.setVisibility(View.GONE);
         }
     }
@@ -96,7 +103,8 @@ public class FragmentMessageConfig extends Fragment {
         this.btnMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DialogGroupMembers(activity, channel).show();
+                dialogGroupMembers = new DialogGroupMembers(activity, channel);
+                dialogGroupMembers.show();
             }
         });
 
@@ -148,5 +156,16 @@ public class FragmentMessageConfig extends Fragment {
 
     public DialogEditGroup getDialogEditGroup() {
         return dialogEditGroup;
+    }
+
+    public void updateInfo(Channel c){
+        channel.setName(c.getName());
+        channel.setAvatarUrl(c.getAvatarUrl());
+        tvName.setText(channel.getName());
+        ImageUtils.loadUrl(activity, this.ivThumb, channel.getAvatarUrl());
+    }
+
+    public DialogGroupMembers getDialogGroupMembers() {
+        return dialogGroupMembers;
     }
 }

@@ -87,6 +87,7 @@ public class DialogEditGroup {
                 activity.getHomeViewModel().putChannel(channel).observe(activity, res -> {
                     if(RestUtils.isSuccess(res)){
                         Toast.makeText(activity, "Update group successful", Toast.LENGTH_SHORT).show();
+                        activity.getFragmentMessageConfig().updateInfo(channel);
                         hide();
                     }else{
                         Toast.makeText(activity, "Update group fail", Toast.LENGTH_SHORT).show();

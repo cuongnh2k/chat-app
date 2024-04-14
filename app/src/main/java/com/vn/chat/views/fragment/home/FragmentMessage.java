@@ -46,7 +46,7 @@ public class FragmentMessage extends Fragment {
     private LinearLayout viewSearch;
     private SwipeRefreshLayout srlLayout;
     private View view;
-    private List<Message> messages;
+    private static List<Message> messages;
     private Channel channel;
     private Message message = new Message();
     private SearchDTO searchDTO = new SearchDTO();
@@ -55,6 +55,7 @@ public class FragmentMessage extends Fragment {
     public FragmentMessage(HomeActivity mContext, Channel channel){
         this.activity = mContext;
         this.channel = channel;
+        this.messages = new ArrayList<>();
     }
 
     public Channel getChannel() {
@@ -78,7 +79,6 @@ public class FragmentMessage extends Fragment {
         activity.getToolbar().getTwaBtnConfig().setVisibility(View.VISIBLE);
         activity.getToolbar().getTwaBtnBack().setVisibility(View.VISIBLE);
         activity.getToolbar().setNamePage(channel.getName());
-        this.messages = new ArrayList<>();
         this.tvFileInfo = view.findViewById(R.id.tv_file_info);
         this.tvTargetInfo = view.findViewById(R.id.tv_target_info);
         this.twaBtnRemoveFile = view.findViewById(R.id.twa_remove_file);
@@ -248,6 +248,11 @@ public class FragmentMessage extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        activity.setFragmentTarget(activity.getFragmentMessage());
+    }
 
     @Override
     public void onDestroy() {

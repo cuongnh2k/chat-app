@@ -56,7 +56,8 @@ public class DialogCreateGroup {
         this.contacts = new ArrayList<>();
         this.contacts.addAll(contacts);
         for(Channel contact : this.contacts){
-            contact.setCreateGroup(true);
+            contact.setCancel(false);
+            contact.setHaveCheckbox(true);
         }
 
         this.init();

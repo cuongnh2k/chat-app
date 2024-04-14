@@ -41,9 +41,6 @@ public interface AuthRequest {
     @POST("common/user/{userId}/active")
     Call<ApiResponse<User>> activeUser(@Path("userId") String userId, @Body User user);
 
-    @POST("common/device/refresh-token")
-    Call<ApiResponse<User>> refreshToken();
-
     @GET("common/device")
     Call<ApiResponse<Map<String, Object>>> getDevice(@Header("Authorization") String auth, @Query("activated") String activated);
 
