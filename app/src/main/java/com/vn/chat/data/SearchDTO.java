@@ -1,7 +1,7 @@
 package com.vn.chat.data;
 
 public class SearchDTO {
-    private String search;
+    private String search = "";
     private String type;
     private Integer pageNumber = 0;
     private Integer pageSize = 50;

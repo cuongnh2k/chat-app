@@ -30,6 +30,7 @@ import com.vn.chat.views.fragment.home.FragmentMessageConfig;
 import com.vn.chat.views.fragment.home.FragmentProfile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +133,6 @@ public class HomeActivity extends CommonActivity {
     }
 
     public void connect(){
-//        String uid = SessionUtils.get(this, DataStatic.SESSION.KEY.USER_ID, "");
         Map<String, Object> jwtDecode = DataStatic.JWT_Decoded(DataStatic.AUTHOR.ACCESS_TOKEN);
         String uid = (String) jwtDecode.get("sub");
 //        String uid = "5";
@@ -167,7 +167,6 @@ public class HomeActivity extends CommonActivity {
 
         // Receive greetings
         Disposable dispTopic = stomp.topic("/user/"+uid+"/private")
-//        Disposable dispTopic = stomp.topic("/user/"+uid+"/queue/messages")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
@@ -181,17 +180,8 @@ public class HomeActivity extends CommonActivity {
                             fragmentHome.updateMessage(res.getChannel());
                         }
                     }
-                    Log.d(TAG, topicMessage.getPayload());
-                    //                    Message messageInfo = new Gson().fromJson(topicMessage.getPayload(), Message.class);
-//                    if(fragmentActive instanceof ChatFragment){
-//                        chatFragment.updateItem(messageInfo);
-//                    }else if(fragmentActive instanceof MessageFragment){
-//                        if(messageFragment.getIdGroup().equals(messageInfo.getIdGroup())){
-//                            messageFragment.pushMessage(messageInfo);
-//                        }
-//                    }
                 }, throwable -> {
-                    Log.e(TAG, throwable.getMessage());
+
                 });
 
         compositeDisposable.add(dispTopic);
@@ -240,7 +230,7 @@ public class HomeActivity extends CommonActivity {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         fragmentContact = new FragmentContact(HomeActivity.this);
         fragmentTarget = fragmentContact;
-        transaction.replace(R.id.layout_content, fragmentContact).addToBackStack(DataStatic.STACK_APP);
+        transaction.replace(R.id.layout_content, fragmentContact);
         transaction.commitAllowingStateLoss();
     }
 
@@ -249,7 +239,7 @@ public class HomeActivity extends CommonActivity {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         fragmentGroup = new FragmentGroup(HomeActivity.this);
         fragmentTarget = fragmentGroup;
-        transaction.replace(R.id.layout_content, fragmentGroup).addToBackStack(DataStatic.STACK_APP);
+        transaction.replace(R.id.layout_content, fragmentGroup);
         transaction.commitAllowingStateLoss();
     }
 
@@ -260,7 +250,7 @@ public class HomeActivity extends CommonActivity {
             fragmentProfile = new FragmentProfile(HomeActivity.this);
         }
         fragmentTarget = fragmentProfile;
-        transaction.replace(R.id.layout_content, fragmentProfile).addToBackStack(DataStatic.STACK_APP);
+        transaction.replace(R.id.layout_content, fragmentProfile);
         transaction.commitAllowingStateLoss();
     }
 
@@ -340,6 +330,10 @@ public class HomeActivity extends CommonActivity {
 
     public FragmentContact getFragmentContact() {
         return fragmentContact;
+    }
+
+    public FragmentGroup getFragmentGroup() {
+        return fragmentGroup;
     }
 
     public FragmentMessageConfig getFragmentMessageConfig() {

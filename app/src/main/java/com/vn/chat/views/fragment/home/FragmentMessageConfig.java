@@ -64,6 +64,9 @@ public class FragmentMessageConfig extends Fragment {
         this.tvName = this.view.findViewById(R.id.tv_name);
         this.btnEdit = this.view.findViewById(R.id.btn_edit);
 
+        activity.getToolbar().getTwaBtnConfig().setVisibility(View.GONE);
+        activity.getToolbar().getTwaSearch().setVisibility(View.GONE);
+
         if(channel.isAdmin() || !channel.getType().equals("GROUP")){
             this.btnOutGroup.setVisibility(View.GONE);
         }else{
@@ -115,9 +118,10 @@ public class FragmentMessageConfig extends Fragment {
             @Override
             public void onClick(View view) {
                 Channel c = new Channel();
+                c.setChannelId(channel.getId());
                 c.setStatus(DataStatic.STATUS.CANCEL);
-                c.setStatus(DataStatic.AUTHOR.USER_INFO.getId());
-                activity.getHomeViewModel().postReactOwner(c).observe(activity, res -> {
+                c.setUserId(DataStatic.AUTHOR.USER_INFO.getId());
+                activity.getHomeViewModel().postReact(c).observe(activity, res -> {
                     if(RestUtils.isSuccess(res)){
                         Toast.makeText(activity, "Out group successful", Toast.LENGTH_SHORT).show();
                         activity.setFragmentHome();

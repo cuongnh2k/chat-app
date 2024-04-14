@@ -45,7 +45,7 @@ public class ChannelRepository {
 
     public LiveData<ApiResponse<Channel>> getChannel(SearchDTO search){
         MutableLiveData<ApiResponse<Channel>> data = new MutableLiveData<>();
-        this.channelRequest.getChannel(search.getType(), search.getPageNumber(), search.getPageSize()).enqueue(new Callback<ApiResponse<Channel>>() {
+        this.channelRequest.getChannel(search.getSearch(), search.getType(), search.getPageNumber(), search.getPageSize()).enqueue(new Callback<ApiResponse<Channel>>() {
             @Override
             public void onResponse(Call<ApiResponse<Channel>> call, Response<ApiResponse<Channel>> response) {
                 data.setValue(RestUtils.get(response));
@@ -157,7 +157,7 @@ public class ChannelRepository {
 
     public LiveData<ApiResponse<Message>> getMessage(Message message, SearchDTO searchDTO){
         MutableLiveData<ApiResponse<Message>> data = new MutableLiveData<>();
-        this.channelRequest.getMessage(message.getChannelId(), searchDTO.getPageNumber(), searchDTO.getPageSize()).enqueue(new Callback<ApiResponse<Message>>() {
+        this.channelRequest.getMessage(message.getChannelId(), searchDTO.getSearch(), searchDTO.getPageNumber(), searchDTO.getPageSize()).enqueue(new Callback<ApiResponse<Message>>() {
             @Override
             public void onResponse(Call<ApiResponse<Message>> call, Response<ApiResponse<Message>> response) {
                 data.setValue(RestUtils.get(response));

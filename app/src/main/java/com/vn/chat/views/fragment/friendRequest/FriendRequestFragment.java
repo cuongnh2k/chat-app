@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.vn.chat.R;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.FriendRequestActivity;
@@ -32,6 +34,9 @@ public class FriendRequestFragment extends Fragment {
     private ListView lvData;
     private List<Channel> channels;
     private ContactAdapter contactAdapter;
+
+    private EditText etSearch;
+    private TextViewAwsSo btnSearch;
 
     private SearchDTO search = new SearchDTO();
     private boolean isOver = false, isLoad = false;
@@ -51,6 +56,9 @@ public class FriendRequestFragment extends Fragment {
 
     private void init(){
         this.search.setType(DataStatic.TYPE.RECEIVED);
+
+        this.etSearch = view.findViewById(R.id.et_search);
+        this.btnSearch = view.findViewById(R.id.btn_search);
         this.tvNoData = this.view.findViewById(R.id.tv_no_data);
         this.lvData = this.view.findViewById(R.id.lv_data);
         this.channels = new ArrayList<>();
@@ -64,6 +72,7 @@ public class FriendRequestFragment extends Fragment {
             lvData.setVisibility(View.GONE);
             tvNoData.setVisibility(View.VISIBLE);
         }
+
         activity.getFriendRequestViewModel().getFriendRequest(this.search).observe(activity, res -> {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
@@ -102,6 +111,19 @@ public class FriendRequestFragment extends Fragment {
                             addMoreData();
                         }
                     }
+                }
+            }
+        });
+
+        this.btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isLoad) {
+                    search.setSearch(etSearch.getText().toString());
+                    search.setPageNumber(0);
+                    channels.clear();
+                    contactAdapter.notifyDataSetChanged();
+                    addMoreData();
                 }
             }
         });

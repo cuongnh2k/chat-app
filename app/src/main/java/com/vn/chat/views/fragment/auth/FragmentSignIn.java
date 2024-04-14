@@ -66,10 +66,10 @@ public class FragmentSignIn extends Fragment {
         this.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = etUsername.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
-//                String username = "tuyen.cntt.k13a@gmail.com";
-//                String password = "Tuyen321!";
+//                String username = etUsername.getText().toString().trim();
+//                String password = etPassword.getText().toString().trim();
+                String username = "tuyen.cntt.k13a@gmail.com";
+                String password = "Tuyen321!";
                 ViewUtils.hideKeyboard(context);
                 if(username.length() == 0 || password.length() == 0){
                     Toast.makeText(context, "Username and password not empty", Toast.LENGTH_SHORT).show();
@@ -85,21 +85,21 @@ public class FragmentSignIn extends Fragment {
                         Toast.makeText(context, "Password format error", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    context.showProgress("Request", "Wait!!!");
+                    context.showProgress("Login", "Wait!!!");
                     context.getAuthViewModel().login(new User(username, password)).observe(context, res -> {
                         if(RestUtils.isSuccess(res)) {
                             Device d = (Device) res.getData();
-                            DataStatic.AUTHOR.ACCESS_TOKEN = d.getAccessToken();
-                            DataStatic.AUTHOR.REFRESH_TOKEN = d.getRefreshToken();
-                            DataStatic.AUTHOR.DEVICE_ID = d.getDeviceId();
-                            SessionUtils.set(context, DataStatic.SESSION.KEY.AUTH, d);
-                            context.getAuthViewModel().refresh();
-                            LiveData<ApiResponse<Map<String, Object>>> lvData2 = context.getAuthViewModel().getDevices("false");
+                            LiveData<ApiResponse<Map<String, Object>>> lvData2 = context.getAuthViewModel().getDevices("Bearer "+d.getAccessToken(), "false");
                             lvData2.observe(context, data2 -> {
                                 if (data2.getCode() == -10305) {
                                     String deviceId = (String) data2.getData().get("deviceId");
                                     context.setFragmentDeviceConfirm(deviceId);
                                 } else {
+                                    DataStatic.AUTHOR.ACCESS_TOKEN = d.getAccessToken();
+                                    DataStatic.AUTHOR.REFRESH_TOKEN = d.getRefreshToken();
+                                    DataStatic.AUTHOR.DEVICE_ID = d.getDeviceId();
+                                    SessionUtils.set(context, DataStatic.SESSION.KEY.AUTH, d);
+                                    context.getAuthViewModel().refresh();
                                     Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show();
                                     context.finish();
                                     context.startActivity(new Intent(context, HomeActivity.class));

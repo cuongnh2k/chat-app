@@ -142,6 +142,12 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
                             Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
                         }
                     });
+                }else if(((HomeActivity) activity).getFragmentTarget() == ((HomeActivity) activity).getFragmentContact()){
+                    ((HomeActivity) activity).getHomeViewModel().postReact(channel).observe(activity, res -> {
+                        if(RestUtils.isSuccess(res)){
+                            Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
             this.btnAccept.setVisibility(View.GONE);
@@ -155,7 +161,8 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
                 @Override
                 public void onClick(View view) {
                     if(activity instanceof HomeActivity){
-                        if(((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentContact())){
+                        if(((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentContact()) ||
+                                ((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentGroup())){
                             ((HomeActivity) activity).setFragmentMessage(channel);
                         }
                     }
@@ -206,7 +213,10 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    channel.setId(tmpChannelId);
+                    if(channel.getChannelId() != null) channel.setId(channel.getChannelId());
+                    if(channel.getId() != null) channel.setChannelId(channel.getId());
+                    if(channel.getId() == null) channel.setId(tmpChannelId);
+
                     channel.setStatus(DataStatic.STATUS.CANCEL);
                     postReactEvent(channel);
                 }

@@ -47,6 +47,7 @@ public class AuthActivity extends CommonActivity {
             Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
             setFragmentSignIn();
         }
+//        setFragmentSignIn();
     }
 
     private void init(){

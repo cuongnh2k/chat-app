@@ -45,6 +45,6 @@ public interface AuthRequest {
     Call<ApiResponse<User>> refreshToken();
 
     @GET("common/device")
-    Call<ApiResponse<Map<String, Object>>> getDevice(@Query("activated") String activated);
+    Call<ApiResponse<Map<String, Object>>> getDevice(@Header("Authorization") String auth, @Query("activated") String activated);
 
 }

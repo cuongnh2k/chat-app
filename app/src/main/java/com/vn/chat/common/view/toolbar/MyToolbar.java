@@ -9,7 +9,7 @@ import com.vn.chat.common.view.icon.TextViewAwsSo;
 
 public class MyToolbar {
     private Activity activity;
-    private TextViewAwsSo twaMenuMore, twaBtnBack, twaBtnConfig;
+    private TextViewAwsSo twaSearch, twaBtnBack, twaBtnConfig;
     private TextView tvNamePage;
 
     public MyToolbar(Activity activity){
@@ -18,14 +18,14 @@ public class MyToolbar {
     }
 
     private void init(){
-        this.twaMenuMore = this.activity.findViewById(R.id.twa_menumore);
+        this.twaSearch = this.activity.findViewById(R.id.twa_search);
         this.twaBtnBack = this.activity.findViewById(R.id.twa_btn_back);
         this.twaBtnConfig = this.activity.findViewById(R.id.twa_config);
         this.tvNamePage = this.activity.findViewById(R.id.tv_name_page);
     }
 
-    public TextViewAwsSo getTwaMenuMore(){
-        return this.twaMenuMore;
+    public TextViewAwsSo getTwaSearch(){
+        return this.twaSearch;
     }
 
     public TextViewAwsSo getTwaBtnBack(){

@@ -23,7 +23,7 @@
             android:layout_weight="10"
             android:background="@null"
             android:gravity="center|left"
-            android:hint="Tìm kiếm"
+            android:hint="Search"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"

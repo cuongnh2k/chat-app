@@ -23,7 +23,7 @@
             android:layout_weight="10"
             android:background="@null"
             android:gravity="center|left"
-            android:hint="Tìm kiếm"
+            android:hint="Search"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -65,17 +65,23 @@
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
-    <ListView
-        android:id="@+id/lv_data"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lv_data"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

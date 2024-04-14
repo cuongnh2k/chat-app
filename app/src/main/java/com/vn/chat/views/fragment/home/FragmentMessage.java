@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -38,10 +39,11 @@ public class FragmentMessage extends Fragment {
     private HomeActivity activity;
     private RecyclerView rvData;
     private MessageAdapter messageAdapter;
-    private EditText etContent;
+    private EditText etContent, etSearch;
     private ImageView ivSend, ivAttachFile;
     private TextView tvFileInfo, tvTargetInfo;
-    private TextViewAwsSo twaBtnRemoveFile, twaBtnRemoveTarget;
+    private TextViewAwsSo twaBtnRemoveFile, twaBtnRemoveTarget, btnSearch, btnCloseSearch;
+    private LinearLayout viewSearch;
     private SwipeRefreshLayout srlLayout;
     private View view;
     private List<Message> messages;
@@ -72,6 +74,7 @@ public class FragmentMessage extends Fragment {
 
     private void init(){
         searchDTO.setPageSize(20);
+        activity.getToolbar().getTwaSearch().setVisibility(View.VISIBLE);
         activity.getToolbar().getTwaBtnConfig().setVisibility(View.VISIBLE);
         activity.getToolbar().getTwaBtnBack().setVisibility(View.VISIBLE);
         activity.getToolbar().setNamePage(channel.getName());
@@ -88,10 +91,15 @@ public class FragmentMessage extends Fragment {
         this.rvData.setAdapter(this.messageAdapter);
         this.rvData.setLayoutManager(new LinearLayoutManager(activity));
         this.srlLayout = view.findViewById(R.id.srl_layout);
+        this.etSearch = view.findViewById(R.id.et_search);
+        this.btnSearch = view.findViewById(R.id.btn_search);
+        this.btnCloseSearch = view.findViewById(R.id.btn_close_search);
+        this.viewSearch = view.findViewById(R.id.view_search);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void loadMessage(boolean isScrollEnd){
+        activity.showProgress("Load message", "Waiting minutes");
         activity.getHomeViewModel().getMessage(new Message(this.channel.getId()), searchDTO).observe(activity, res -> {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
@@ -100,10 +108,11 @@ public class FragmentMessage extends Fragment {
                     }
                     messageAdapter.notifyDataSetChanged();
                     if(isScrollEnd) rvData.scrollToPosition(messages.size() - 1);
-                    if(srlLayout.isRefreshing()) srlLayout.setRefreshing(false);
                     searchDTO.addPage();
                 }
             }
+            if(srlLayout.isRefreshing()) srlLayout.setRefreshing(false);
+            activity.hideProgress();
         });
     }
 
@@ -182,6 +191,31 @@ public class FragmentMessage extends Fragment {
             @Override
             public void onRefresh() {
                 loadMessage(false);
+            }
+        });
+
+        activity.getToolbar().getTwaSearch().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewSearch.setVisibility(View.VISIBLE);
+            }
+        });
+
+        this.btnCloseSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewSearch.setVisibility(View.GONE);
+            }
+        });
+
+        this.btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchDTO.setSearch(etSearch.getText().toString());
+                searchDTO.setPageNumber(0);
+                messages.clear();
+                messageAdapter.notifyDataSetChanged();
+                loadMessage(true);
             }
         });
     }

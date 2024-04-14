@@ -8,14 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vn.chat.R;
 import com.vn.chat.common.utils.RestUtils;
+import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.FriendRequestActivity;
@@ -37,7 +40,10 @@ public class FragmentContact extends Fragment {
     private ContactAdapter contactAdapter;
     private ListView lvData;
     private TextView tvNoData;
-    private List<Channel> channels;
+    private EditText etSearch;
+    private TextViewAwsSo btnSearch;
+    private static List<Channel> channels;
+    private SwipeRefreshLayout srl;
     private DialogAddUser dialogSearchUser = null;
     private DialogCreateGroup dialogCreateGroup = null;
 
@@ -47,6 +53,7 @@ public class FragmentContact extends Fragment {
     @SuppressLint("ValidFragment")
     public FragmentContact(HomeActivity mContext){
         this.context = mContext;
+        channels = new ArrayList<>();
     }
 
     @Nullable
@@ -59,9 +66,11 @@ public class FragmentContact extends Fragment {
     }
 
     public void init(){
-        this.channels = new ArrayList<>();
         this.search.setType("FRIEND");
 
+        this.srl = view.findViewById(R.id.srl_layout);
+        this.etSearch = view.findViewById(R.id.et_search);
+        this.btnSearch = view.findViewById(R.id.btn_search);
         this.btnCreateGroup = view.findViewById(R.id.btn_create_group);
         this.btnRequestList = view.findViewById(R.id.btn_request_list);
         this.btnRequest = view.findViewById(R.id.btn_request);
@@ -80,7 +89,10 @@ public class FragmentContact extends Fragment {
         context.getHomeViewModel().getChannel(search).observe(context, res -> {
             if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
-                    channels.addAll(res.getItems());
+                    for(Channel channel : res.getItems()){
+                        channel.setCancel(true);
+                        channels.add(channel);
+                    }
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
                     contactAdapter.notifyDataSetChanged();
@@ -90,6 +102,7 @@ public class FragmentContact extends Fragment {
             }else{
                 isOver = true;
             }
+            if(srl.isRefreshing()) srl.setRefreshing(false);
             search.addPage();
             isLoad = false;
         });
@@ -138,9 +151,42 @@ public class FragmentContact extends Fragment {
                 }
             }
         });
+
+        this.btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isLoad) {
+                    search.setSearch(etSearch.getText().toString());
+                    search.setPageNumber(0);
+                    channels.clear();
+                    contactAdapter.notifyDataSetChanged();
+                    addMoreData();
+                }
+            }
+        });
+
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadData();
+            }
+        });
     }
 
     public DialogCreateGroup getDialogCreateGroup() {
         return dialogCreateGroup;
+    }
+
+    private void reloadData(){
+        search.setPageNumber(0);
+        channels.clear();
+        contactAdapter.notifyDataSetChanged();
+        addMoreData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        context.setFragmentTarget(context.getFragmentContact());
     }
 }

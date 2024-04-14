@@ -103,6 +103,10 @@ public class HomeViewModel extends AndroidViewModel {
     /**
      * React
      * */
+    public LiveData<ApiResponse<Channel>> postReact(Channel channel){
+        return this.channelRepository.postReact(channel);
+    }
+
     public LiveData<ApiResponse<User>> postReactOwner(Channel channel){
         return this.channelRepository.postReactOwner(channel);
     }

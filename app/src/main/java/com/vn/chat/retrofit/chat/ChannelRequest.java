@@ -23,7 +23,7 @@ public interface ChannelRequest {
     Call<ApiResponse<Channel>> detailChannel(@Path("channelId") String channelId);
 
     @GET("chat/channel")
-    Call<ApiResponse<Channel>> getChannel(@Query("type") String type, @Query("pageNumber") Integer pageNumber, @Query("pageSize") Integer pageSize);
+    Call<ApiResponse<Channel>> getChannel(@Query("search") String search, @Query("type") String type, @Query("pageNumber") Integer pageNumber, @Query("pageSize") Integer pageSize);
 
     @POST("chat/channel")
     Call<ApiResponse<Channel>> postChannel(@Body Channel channel);
@@ -44,7 +44,7 @@ public interface ChannelRequest {
     Call<ApiResponse<Channel>> postReact(@Path("channelId") String channelId, @Body Channel channel);
 
     @GET("chat/channel/{channelId}/message")
-    Call<ApiResponse<Message>> getMessage(@Path("channelId") String channelId, @Query("pageNumber") Integer pageNumber, @Query("pageSize") Integer pageSize);
+    Call<ApiResponse<Message>> getMessage(@Path("channelId") String channelId, @Query("search") String search, @Query("pageNumber") Integer pageNumber, @Query("pageSize") Integer pageSize);
 
     @POST("chat/channel/{channelId}/message")
     Call<ApiResponse<Message>> postMessage(@Path("channelId") String channelId, @Body Message message);
