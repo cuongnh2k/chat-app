@@ -86,7 +86,7 @@ public class DialogGroupAddMember {
             if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
                     for(User user : res.getItems()){
-                        contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), !("ACCEPT".equals(user.getStatus()))));
+                        contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), !("ACCEPT".equals(user.getStatus())), user.getAvatarUrl()));
                     }
                     contactAdapter.notifyDataSetChanged();
                     lvContact.setVisibility(View.VISIBLE);

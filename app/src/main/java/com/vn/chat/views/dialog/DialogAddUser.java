@@ -76,7 +76,7 @@ public class DialogAddUser {
                     if(res.getCode().equals(1)) {
                         if(res.getItems().size() > 0){
                             for(User user : res.getItems()){
-                                contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), true));
+                                contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), !("ACCEPT".equals(user.getStatus())), user.getAvatarUrl()));
                             }
                             contactAdapter.notifyDataSetChanged();
                             lvContact.setVisibility(View.VISIBLE);

@@ -34,11 +34,12 @@ public class Channel {
         this.channelId = id;
     }
 
-    public Channel(String userId, String name, String email, boolean isRequest) {
+    public Channel(String userId, String name, String email, boolean isRequest, String avatar) {
         this.name = name;
         this.email = email;
         this.userId = userId;
         this.isRequest = isRequest;
+        this.avatarUrl = avatar;
     }
 
     public Channel(String userId, String name, String email, boolean isRequest, boolean isAccept) {

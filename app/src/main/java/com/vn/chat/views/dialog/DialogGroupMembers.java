@@ -72,7 +72,7 @@ public class DialogGroupMembers {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for (User user : res.getItems()){
-                        Channel c = new Channel(user.getUserId(), user.getName(), user.getEmail(), false);
+                        Channel c = new Channel(user.getUserId(), user.getName(), user.getEmail(), false, user.getAvatarUrl());
                         if(!user.getUserId().equals(channel.getOwnerId()) && channel.isAdmin()){
                             c.setChangeAdmin(channel.isAdmin());
                             c.setCancel(true);
