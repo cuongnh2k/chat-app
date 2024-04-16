@@ -42,12 +42,13 @@ public class Channel {
         this.avatarUrl = avatar;
     }
 
-    public Channel(String userId, String name, String email, boolean isRequest, boolean isAccept) {
+    public Channel(String userId, String name, String email, boolean isRequest, boolean isAccept, String avatar) {
         this.name = name;
         this.email = email;
         this.userId = userId;
         this.isRequest = isRequest;
         this.isAccept = isAccept;
+        this.avatarUrl = avatar;
     }
 
     public String getId() {

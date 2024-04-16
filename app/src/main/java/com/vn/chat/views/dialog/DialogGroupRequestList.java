@@ -72,7 +72,7 @@ public class DialogGroupRequestList {
             if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     for (User user : res.getItems()){
-                        requests.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), false, true));
+                        requests.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), false, true, user.getAvatarUrl()));
                     }
                     this.tvNoData.setVisibility(View.GONE);
                     this.lvMember.setVisibility(View.VISIBLE);
