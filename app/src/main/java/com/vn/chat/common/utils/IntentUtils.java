@@ -9,6 +9,7 @@ public class IntentUtils {
 
     public static class FRAGMENT {
         public static final String MESSAGE = "fragment_message";
+        public static final String MESSAGE_CONFIG = "fragment_message_config";
         public static final String CONTACT = "fragment_contact";
     }
 

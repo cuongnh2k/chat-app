@@ -36,18 +36,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.vn.chat.common.view.icon.TextViewAwsSo
-        android:id="@+id/twa_menumore"
+        android:id="@+id/twa_search"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="@string/ico_ellipsis_v"
+        android:text="@string/ico_search"
         android:textColor="@color/color_orange"
         android:textSize="@dimen/text_large"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_name_page"
         app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_name_page" />
+        app:layout_constraintEnd_toStartOf="@+id/twa_config"
+        app:layout_constraintTop_toTopOf="@+id/tv_name_page"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.vn.chat.common.view.icon.TextViewAwsSo
         android:id="@+id/twa_config"

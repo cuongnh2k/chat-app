@@ -47,12 +47,12 @@ public class AuthActivity extends CommonActivity {
             Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
             setFragmentSignIn();
         }
+//        setFragmentSignIn();
     }
 
     private void init(){
         this.authViewModel = ViewModelProviders.of(AuthActivity.this).get(AuthViewModel.class);
         this.twaBtnBack = findViewById(R.id.twa_btn_back);
-        super.progressDialog = new ProgressDialog(this);
     }
 
     private void actionView(){
@@ -99,11 +99,9 @@ public class AuthActivity extends CommonActivity {
         transaction.commitAllowingStateLoss();
     }
 
-    public void setFragmentDeviceConfirm(String deviceId){
+    public void setFragmentDeviceConfirm(Device d, String deviceId){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if(fragmentDeviceConfirm == null){
-            fragmentDeviceConfirm = new FragmentDeviceConfirm(AuthActivity.this, deviceId);
-        }
+        fragmentDeviceConfirm = new FragmentDeviceConfirm(AuthActivity.this, d, deviceId);
         transaction.replace(R.id.layout_content, fragmentDeviceConfirm).addToBackStack(DataStatic.STACK_APP);
         transaction.commitAllowingStateLoss();
     }

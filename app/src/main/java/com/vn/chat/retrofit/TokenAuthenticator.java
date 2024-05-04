@@ -91,6 +91,11 @@ public class TokenAuthenticator implements Authenticator {
             return true;
         } else {
             //cannot refresh
+
+            Intent intent = new Intent(application, AuthActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            this.application.startActivity(intent);
+            SessionUtils.set(application, DataStatic.SESSION.KEY.AUTH, "{}");
             return false;
         }
     }

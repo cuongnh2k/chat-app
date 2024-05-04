@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.vn.chat.R;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.File;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.GalleryAdapter;
 
@@ -32,6 +35,9 @@ public class FragmentGallery extends Fragment {
     private GridView gvData;
     private Channel channel;
 
+    private SearchDTO search = new SearchDTO();
+    private boolean isOver = false, isLoad = false;
+
     @SuppressLint("ValidFragment")
     public FragmentGallery(HomeActivity mContext, Channel channel){
         this.activity = mContext;
@@ -44,7 +50,7 @@ public class FragmentGallery extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
-        this.loadGallery();
+        this.actionView();
         return this.view;
     }
 
@@ -56,23 +62,53 @@ public class FragmentGallery extends Fragment {
         this.tvNoData = this.view.findViewById(R.id.tv_no_data);
         this.galleryAdapter = new GalleryAdapter(activity, this.files);
         this.gvData.setAdapter(galleryAdapter);
+
+    }
+
+    private void actionView(){
+        this.gvData.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount){
+                    // here you have reached end of list, load more data
+                    if (!isOver) {
+                        if (!isLoad) {
+                            addMoreData();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void loadGallery(){
-        files.clear();
-        this.gvData.setVisibility(View.GONE);
-        this.tvNoData.setVisibility(View.VISIBLE);
-        galleryAdapter.notifyDataSetChanged();
-        activity.getHomeViewModel().getFiles(new Channel(this.channel.getId())).observe(activity, res -> {
-            if(res.getCode().equals(1)){
+    private void addMoreData(){
+        isLoad = true;
+        if(search.getPageNumber().equals(0)){
+            gvData.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        activity.getHomeViewModel().getFiles(new Channel(this.channel.getId()), search).observe(activity, res -> {
+            if(RestUtils.isSuccess(res)){
                 if(res.getItems().size() > 0){
                     this.gvData.setVisibility(View.VISIBLE);
                     this.tvNoData.setVisibility(View.GONE);
                     files.addAll(res.getItems());
                     galleryAdapter.notifyDataSetChanged();
+                }else{
+                    isOver = true;
                 }
+            }else{
+                isOver = true;
             }
+            search.addPage();
+            isLoad = false;
         });
     }
 

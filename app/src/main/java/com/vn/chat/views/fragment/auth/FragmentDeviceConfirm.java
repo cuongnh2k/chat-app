@@ -34,11 +34,13 @@ public class FragmentDeviceConfirm extends Fragment {
     private EditText etCode;
     private Button btnSubmit;
     private String deviceId;
+    private Device device;
 
     @SuppressLint("ValidFragment")
-    public FragmentDeviceConfirm(AuthActivity mContext, String deviceId){
+    public FragmentDeviceConfirm(AuthActivity mContext, Device d, String deviceId){
         this.context = mContext;
         this.deviceId = deviceId;
+        this.device = d;
     }
 
     @Nullable
@@ -62,12 +64,15 @@ public class FragmentDeviceConfirm extends Fragment {
             public void onClick(View view) {
                 context.showProgress("Request", "Wait");
                 String code = etCode.getText().toString().trim();
-                Device device = new Device();
                 device.setCode(code);
                 device.setId(deviceId);
                 context.getAuthViewModel().activeDevice(device).observe(context, res -> {
                     if(RestUtils.isSuccess(res)) {
-                        context.finish();
+                        DataStatic.AUTHOR.ACCESS_TOKEN = device.getAccessToken();
+                        DataStatic.AUTHOR.REFRESH_TOKEN = device.getRefreshToken();
+                        DataStatic.AUTHOR.DEVICE_ID = device.getDeviceId();
+                        SessionUtils.set(context, DataStatic.SESSION.KEY.AUTH, device);
+                        context.getAuthViewModel().refresh();
                         context.startActivity(new Intent(context, HomeActivity.class));
                     }else {
                         Toast.makeText(context, "Code verify wrong", Toast.LENGTH_SHORT).show();

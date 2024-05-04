@@ -30,7 +30,7 @@ public class AuthViewModel extends AndroidViewModel {
         this.deviceRepository.refresh(getApplication());
     }
 
-    public LiveData<ApiResponse<Device>> login(User user){
+    public LiveData<ApiResponse<Object>> login(User user){
         return this.authRepository.login(user);
     }
 
@@ -46,8 +46,8 @@ public class AuthViewModel extends AndroidViewModel {
         return this.authRepository.activeDevice(device);
     }
 
-    public LiveData<ApiResponse<Map<String, Object>>> getDevices(String activated){
-        return this.deviceRepository.getDevices(activated);
+    public LiveData<ApiResponse<Map<String, Object>>> getDevices(String auth, String activated){
+        return this.deviceRepository.getDevices(auth, activated);
     }
 
     public LiveData<ApiResponse<User>> userDetail(){

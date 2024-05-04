@@ -11,14 +11,13 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.vn.chat.R;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
@@ -74,7 +73,6 @@ public class DialogGroupAddMember {
             @Override
             public void onClick(View view) {
                 searchUser();
-
             }
         });
     }
@@ -85,10 +83,10 @@ public class DialogGroupAddMember {
         lvContact.setVisibility(View.GONE);
         tvNoData.setVisibility(View.VISIBLE);
         activity.getHomeViewModel().getUserAdd(channel).observe(activity, res -> {
-            if(res.getCode().equals(1)) {
+            if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
                     for(User user : res.getItems()){
-                        contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), true));
+                        contacts.add(new Channel(user.getUserId(), user.getName(), user.getEmail(), !("ACCEPT".equals(user.getStatus())), user.getAvatarUrl()));
                     }
                     contactAdapter.notifyDataSetChanged();
                     lvContact.setVisibility(View.VISIBLE);

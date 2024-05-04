@@ -8,26 +8,24 @@ import androidx.lifecycle.LiveData;
 
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
-import com.vn.chat.data.User;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.repository.chat.ChannelRepository;
-import com.vn.chat.repository.chat.UserRepository;
 
 public class FriendRequestViewModel extends AndroidViewModel {
 
-    private ChannelRepository chanelRepository;
+    private ChannelRepository channelRepository;
 
     public FriendRequestViewModel(@NonNull Application application) {
         super(application);
-        this.chanelRepository = new ChannelRepository(getApplication());
+        this.channelRepository = new ChannelRepository(getApplication());
     }
 
-    public LiveData<ApiResponse<Channel>> getFriendRequest(){
-        return this.chanelRepository.getFriendRequest();
+    public LiveData<ApiResponse<Channel>> getFriendRequest(SearchDTO search){
+        return this.channelRepository.getFriendRequest(search);
     }
 
     public LiveData<ApiResponse<Channel>> postReact(Channel channel){
-        return this.chanelRepository.postReact(channel);
+        return this.channelRepository.postReact(channel);
     }
 
 }

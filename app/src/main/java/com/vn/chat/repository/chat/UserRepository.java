@@ -8,11 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.vn.chat.common.DataStatic;
 import com.vn.chat.common.response.ApiResponse;
 import com.vn.chat.common.utils.RestUtils;
-import com.vn.chat.data.Channel;
-import com.vn.chat.data.CommonDTO;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.data.User;
 import com.vn.chat.retrofit.RetrofitRequest;
-import com.vn.chat.retrofit.chat.ChannelRequest;
 import com.vn.chat.retrofit.chat.UserRequest;
 
 import retrofit2.Call;
@@ -26,7 +24,7 @@ public class UserRepository {
         this.userRequest = RetrofitRequest.instance(application, DataStatic.CHAT_URL).create(UserRequest.class);
     }
 
-    public LiveData<ApiResponse<User>> getUser(CommonDTO commonDTO){
+    public LiveData<ApiResponse<User>> getUser(SearchDTO commonDTO){
         MutableLiveData<ApiResponse<User>> data = new MutableLiveData<>();
         this.userRequest.getUser(commonDTO.getSearch()).enqueue(new Callback<ApiResponse<User>>() {
             @Override

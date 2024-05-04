@@ -9,7 +9,7 @@ public class Device {
     private String refreshToken;
     private String userId;
     private String deviceId;
-    private boolean all = true;
+    private boolean all;
     private List<String> deviceIds;
 
     public String getId() {

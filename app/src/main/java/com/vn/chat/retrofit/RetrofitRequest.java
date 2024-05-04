@@ -6,6 +6,8 @@ import android.app.Application;
 import com.vn.chat.common.DataStatic;
 
 import java.io.IOException;
+import java.util.Objects;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,6 +29,7 @@ public class RetrofitRequest {
                     Request request = chain.request().newBuilder()
                             .addHeader("API-Key", DataStatic.API_KEY)
                             .addHeader("Authorization", "Bearer "+DataStatic.AUTHOR.ACCESS_TOKEN)
+//                            .addHeader("User-Agent", Objects.requireNonNull(System.getProperty("http.agent")))
                             .build();
                     return chain.proceed(request);
                 }

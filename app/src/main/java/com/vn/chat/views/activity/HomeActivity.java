@@ -23,12 +23,14 @@ import com.vn.chat.data.File;
 import com.vn.chat.viewmodel.HomeViewModel;
 import com.vn.chat.views.fragment.home.FragmentContact;
 import com.vn.chat.views.fragment.home.FragmentGallery;
+import com.vn.chat.views.fragment.home.FragmentGroup;
 import com.vn.chat.views.fragment.home.FragmentHome;
 import com.vn.chat.views.fragment.home.FragmentMessage;
 import com.vn.chat.views.fragment.home.FragmentMessageConfig;
 import com.vn.chat.views.fragment.home.FragmentProfile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,18 +50,18 @@ public class HomeActivity extends CommonActivity {
     private HomeViewModel homeViewModel;
     private FragmentHome fragmentHome;
     private FragmentContact fragmentContact;
+    private FragmentGroup fragmentGroup;
     private FragmentProfile fragmentProfile;
     private FragmentMessage fragmentMessage;
     private FragmentMessageConfig fragmentMessageConfig;
     private FragmentGallery fragmentGallery;
     private Fragment fragmentTarget;
-    private TextViewAwsRe icoChanel, icoContact, icoProfile;
+    private TextViewAwsRe icoChanel, icoContact, icoGroup, icoProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         this.init();
         this.actionView();
         loadDetailInfo();
@@ -70,6 +72,7 @@ public class HomeActivity extends CommonActivity {
         this.homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
         this.toolbar = new MyToolbar(HomeActivity.this);
         this.icoChanel = findViewById(R.id.twa_btn_chanel);
+        this.icoGroup = findViewById(R.id.twa_btn_group);
         this.icoContact = findViewById(R.id.twa_btn_contact);
         this.icoProfile = findViewById(R.id.twa_btn_profile);
     }
@@ -100,6 +103,13 @@ public class HomeActivity extends CommonActivity {
             }
         });
 
+        this.icoGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFragmentGroup();
+            }
+        });
+
         this.toolbar.getTwaBtnBack().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +133,6 @@ public class HomeActivity extends CommonActivity {
     }
 
     public void connect(){
-//        String uid = SessionUtils.get(this, DataStatic.SESSION.KEY.USER_ID, "");
         Map<String, Object> jwtDecode = DataStatic.JWT_Decoded(DataStatic.AUTHOR.ACCESS_TOKEN);
         String uid = (String) jwtDecode.get("sub");
 //        String uid = "5";
@@ -139,17 +148,17 @@ public class HomeActivity extends CommonActivity {
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
-                            Log.d(TAG, "Stomp connection opened");
+//                            Log.d(TAG, "Stomp connection opened");
                             break;
                         case ERROR:
-                            Log.e(TAG, "Stomp connection error");
+//                            Log.e(TAG, "Stomp connection error");
                             break;
                         case CLOSED:
-                            Log.d(TAG, "Stomp connection closed");
+//                            Log.d(TAG, "Stomp connection closed");
                             resetSubscriptions();
                             break;
                         case FAILED_SERVER_HEARTBEAT:
-                            Log.d(TAG, "Stomp failed server heartbeat");
+//                            Log.d(TAG, "Stomp failed server heartbeat");
                             break;
                     }
                 });
@@ -158,7 +167,6 @@ public class HomeActivity extends CommonActivity {
 
         // Receive greetings
         Disposable dispTopic = stomp.topic("/user/"+uid+"/private")
-//        Disposable dispTopic = stomp.topic("/user/"+uid+"/queue/messages")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
@@ -172,17 +180,8 @@ public class HomeActivity extends CommonActivity {
                             fragmentHome.updateMessage(res.getChannel());
                         }
                     }
-                    Log.d(TAG, topicMessage.getPayload());
-                    //                    Message messageInfo = new Gson().fromJson(topicMessage.getPayload(), Message.class);
-//                    if(fragmentActive instanceof ChatFragment){
-//                        chatFragment.updateItem(messageInfo);
-//                    }else if(fragmentActive instanceof MessageFragment){
-//                        if(messageFragment.getIdGroup().equals(messageInfo.getIdGroup())){
-//                            messageFragment.pushMessage(messageInfo);
-//                        }
-//                    }
                 }, throwable -> {
-                    Log.e(TAG, throwable.getMessage());
+
                 });
 
         compositeDisposable.add(dispTopic);
@@ -205,6 +204,7 @@ public class HomeActivity extends CommonActivity {
     private void selectorMenu(TextViewAwsRe tvSelected){
         this.icoChanel.setTextColor(getResources().getColor(R.color.black));
         this.icoContact.setTextColor(getResources().getColor(R.color.black));
+        this.icoGroup.setTextColor(getResources().getColor(R.color.black));
         this.icoProfile.setTextColor(getResources().getColor(R.color.black));
         tvSelected.setTextColor(getResources().getColor(R.color.color_blue));
     }
@@ -213,14 +213,16 @@ public class HomeActivity extends CommonActivity {
         this.icoChanel.setVisibility(v);
         this.icoContact.setVisibility(v);
         this.icoProfile.setVisibility(v);
+        this.icoGroup.setVisibility(v);
     }
 
     public void setFragmentHome(){
+        visibleMenu(View.VISIBLE);
+        toolbar.getTwaBtnBack().setVisibility(View.GONE);
+        toolbar.setNamePage(getResources().getString(R.string.app_name));
         selectorMenu(icoChanel);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if(fragmentHome == null){
-            fragmentHome = new FragmentHome(HomeActivity.this);
-        }
+        fragmentHome = new FragmentHome(HomeActivity.this);
         fragmentTarget = fragmentHome;
         transaction.replace(R.id.layout_content, fragmentHome).addToBackStack(DataStatic.STACK_APP);
         transaction.commitAllowingStateLoss();
@@ -229,11 +231,18 @@ public class HomeActivity extends CommonActivity {
     public void setFragmentContact(){
         selectorMenu(icoContact);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        if(fragmentContact == null){
-            fragmentContact = new FragmentContact(HomeActivity.this);
-        }
+        fragmentContact = new FragmentContact(HomeActivity.this);
         fragmentTarget = fragmentContact;
-        transaction.replace(R.id.layout_content, fragmentContact).addToBackStack(DataStatic.STACK_APP);
+        transaction.replace(R.id.layout_content, fragmentContact);
+        transaction.commitAllowingStateLoss();
+    }
+
+    public void setFragmentGroup(){
+        selectorMenu(icoGroup);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        fragmentGroup = new FragmentGroup(HomeActivity.this);
+        fragmentTarget = fragmentGroup;
+        transaction.replace(R.id.layout_content, fragmentGroup);
         transaction.commitAllowingStateLoss();
     }
 
@@ -244,7 +253,7 @@ public class HomeActivity extends CommonActivity {
             fragmentProfile = new FragmentProfile(HomeActivity.this);
         }
         fragmentTarget = fragmentProfile;
-        transaction.replace(R.id.layout_content, fragmentProfile).addToBackStack(DataStatic.STACK_APP);
+        transaction.replace(R.id.layout_content, fragmentProfile);
         transaction.commitAllowingStateLoss();
     }
 
@@ -281,21 +290,26 @@ public class HomeActivity extends CommonActivity {
 //            String fragment = data.getStringExtra(IntentUtils.KEY.FRAGMENT);
             if (null != selectedImageUri) {
                 //Upload image
+                showProgress("Upload file", "Waiting upload to server");
                 File file = new File(FileUtils.getPath(HomeActivity.this, selectedImageUri));
                 homeViewModel.postFile(file).observe(this, res -> {
                     if(res.getCode().equals(1)){
                         if(fragmentTarget != null){
-                            if(fragmentTarget instanceof FragmentMessage){
+                            if(fragmentTarget == fragmentMessage){
                                 fragmentMessage.setFileInfo(res.getData());
                             }
-                            if(fragmentTarget instanceof FragmentContact){
+                            if(fragmentTarget == fragmentContact){
                                 fragmentContact.getDialogCreateGroup().setImageAvatar(res.getData());
                             }
-                            if(fragmentTarget instanceof FragmentProfile){
-
+                            if(fragmentTarget == fragmentProfile){
+                                fragmentProfile.changeAvatar(res.getData());
+                            }
+                            if(fragmentTarget == fragmentMessageConfig){
+                                fragmentMessageConfig.getDialogEditGroup().setImageAvatar(res.getData());
                             }
                         }
                     }
+                    hideProgress();
                 });
             }
         }
@@ -321,8 +335,17 @@ public class HomeActivity extends CommonActivity {
         return fragmentContact;
     }
 
+    public FragmentGroup getFragmentGroup() {
+        return fragmentGroup;
+    }
+
     public FragmentMessageConfig getFragmentMessageConfig() {
         return fragmentMessageConfig;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stomp.disconnect();
+    }
 }

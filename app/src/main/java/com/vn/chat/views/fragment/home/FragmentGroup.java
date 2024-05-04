@@ -2,14 +2,13 @@ package com.vn.chat.views.fragment.home;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,37 +20,32 @@ import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.common.view.icon.TextViewAwsSo;
 import com.vn.chat.data.Channel;
 import com.vn.chat.data.SearchDTO;
-import com.vn.chat.views.activity.FriendRequestActivity;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ContactAdapter;
-import com.vn.chat.views.dialog.DialogCreateGroup;
-import com.vn.chat.views.dialog.DialogAddUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
-public class FragmentContact extends Fragment {
+public class FragmentGroup extends Fragment {
 
-    private static final Integer RES_ID = R.layout.fragment_contact;
+    private static final Integer RES_ID = R.layout.fragment_group;
     private HomeActivity context;
     private View view;
-    private LinearLayout btnCreateGroup, btnRequestList, btnRequest;
     private ContactAdapter contactAdapter;
     private ListView lvData;
     private TextView tvNoData;
-    private EditText etSearch;
-    private TextViewAwsSo btnSearch;
     private static List<Channel> channels;
     private SwipeRefreshLayout srl;
-    private DialogAddUser dialogSearchUser = null;
-    private DialogCreateGroup dialogCreateGroup = null;
+
+    private EditText etSearch;
+    private TextViewAwsSo btnSearch;
 
     private SearchDTO search = new SearchDTO();
     private boolean isOver = false, isLoad = false;
 
     @SuppressLint("ValidFragment")
-    public FragmentContact(HomeActivity mContext){
+    public FragmentGroup(HomeActivity mContext){
         this.context = mContext;
         channels = new ArrayList<>();
     }
@@ -66,14 +60,10 @@ public class FragmentContact extends Fragment {
     }
 
     public void init(){
-        this.search.setType("FRIEND");
-
+        this.search.setType("GROUP");
         this.srl = view.findViewById(R.id.srl_layout);
         this.etSearch = view.findViewById(R.id.et_search);
         this.btnSearch = view.findViewById(R.id.btn_search);
-        this.btnCreateGroup = view.findViewById(R.id.btn_create_group);
-        this.btnRequestList = view.findViewById(R.id.btn_request_list);
-        this.btnRequest = view.findViewById(R.id.btn_request);
         this.lvData = view.findViewById(R.id.lv_data);
         this.tvNoData = view.findViewById(R.id.tv_no_data);
         this.contactAdapter = new ContactAdapter(context, channels);
@@ -82,56 +72,30 @@ public class FragmentContact extends Fragment {
 
     private void addMoreData(){
         isLoad = true;
-        if(search.getPageNumber().equals(0)){
-            lvData.setVisibility(View.GONE);
-            tvNoData.setVisibility(View.VISIBLE);
-        }
-        context.getHomeViewModel().getChannel(search).observe(context, res -> {
+        context.getHomeViewModel().getChannel(this.search).observe(context, res -> {
             if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
-                    for(Channel channel : res.getItems()){
-                        channel.setCancel(true);
-                        channels.add(channel);
-                    }
+                    channels.addAll(res.getItems());
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
                     contactAdapter.notifyDataSetChanged();
                 }else{
                     isOver = true;
+                    if(search.getPageNumber().equals(0)){
+                        lvData.setVisibility(View.GONE);
+                        tvNoData.setVisibility(View.VISIBLE);
+                    }
                 }
             }else{
                 isOver = true;
             }
-            if(srl.isRefreshing()) srl.setRefreshing(false);
             search.addPage();
+            srl.setRefreshing(false);
             isLoad = false;
         });
     }
 
-    public void actionView(){
-        this.btnRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogSearchUser = new DialogAddUser(context);
-                dialogSearchUser.show();
-            }
-        });
-
-        this.btnRequestList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context, FriendRequestActivity.class));
-            }
-        });
-
-        this.btnCreateGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogCreateGroup = new DialogCreateGroup(context, channels);
-                dialogCreateGroup.show();
-            }
-        });
-
+    private void actionView(){
         this.lvData.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -144,7 +108,8 @@ public class FragmentContact extends Fragment {
                 if(lastItem == totalItemCount){
                     // here you have reached end of list, load more data
                     if (!isOver) {
-                        if (!isLoad) {
+                        if (!isLoad && !srl.isRefreshing()) {
+                            System.out.println("ADD MORE");
                             addMoreData();
                         }
                     }
@@ -155,7 +120,7 @@ public class FragmentContact extends Fragment {
         this.btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isLoad) {
+                if(!isLoad){
                     search.setSearch(etSearch.getText().toString());
                     search.setPageNumber(0);
                     channels.clear();
@@ -173,11 +138,7 @@ public class FragmentContact extends Fragment {
         });
     }
 
-    public DialogCreateGroup getDialogCreateGroup() {
-        return dialogCreateGroup;
-    }
-
-    private void reloadData(){
+    public void reloadData(){
         search.setPageNumber(0);
         channels.clear();
         contactAdapter.notifyDataSetChanged();
@@ -187,6 +148,6 @@ public class FragmentContact extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        context.setFragmentTarget(context.getFragmentContact());
+        context.setFragmentTarget(context.getFragmentGroup());
     }
 }

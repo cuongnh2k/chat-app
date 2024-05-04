@@ -54,6 +54,11 @@ public class DataStatic {
         public static final String CANCEL = "CANCEL";
     }
 
+    public static class TYPE {
+        public static final String RECEIVED = "RECEIVED";
+        public static final String SENT = "SENT";
+    }
+
     public static Map<String, Object> JWT_Decoded(String JWTEncoded) {
         try {
             String[] split = JWTEncoded.split("\\.");

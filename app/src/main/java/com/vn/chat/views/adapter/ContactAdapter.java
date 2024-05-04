@@ -57,7 +57,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.showData(contacts.get(position));
-        viewHolder.actionView(contacts.get(position));
+        viewHolder.actionView(contacts.get(position), position);
         return convertView;
     }
 
@@ -69,7 +69,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
         private View view;
         private ImageView ivAvatar;
         private TextView tvName, tvMail;
-        private TextViewAwsSo btnRequest, btnAccept, btnReject, btnRemove;
+        private TextViewAwsSo btnRequest, btnAccept, btnReject, btnRemove, btnChangeAdmin;
         private CheckBox cbCheck;
 
         public ViewHolder(View view){
@@ -85,6 +85,7 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnAccept = this.view.findViewById(R.id.btn_accept);
             this.btnReject = this.view.findViewById(R.id.btn_reject);
             this.btnRemove = this.view.findViewById(R.id.btn_remove);
+            this.btnChangeAdmin = this.view.findViewById(R.id.btn_change_admin);
             this.cbCheck = this.view.findViewById(R.id.cb_check);
         }
 
@@ -108,42 +109,74 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
                 this.btnReject.setVisibility(View.GONE);
             }
 
-            if(chanel.isCreateGroup()){
+            if(chanel.isHaveCheckbox()){
                 this.cbCheck.setVisibility(View.VISIBLE);
             }else{
                 this.cbCheck.setVisibility(View.GONE);
             }
+
+            if(chanel.isCancel()){
+                this.btnRemove.setVisibility(View.VISIBLE);
+            }else{
+                this.btnRemove.setVisibility(View.GONE);
+            }
+
+            if(chanel.isChangeAdmin()){
+                this.btnChangeAdmin.setVisibility(View.VISIBLE);
+            }else{
+                this.btnChangeAdmin.setVisibility(View.GONE);
+            }
         }
 
-        private void postReactEvent(Channel channel){
+        private void postReactEvent(Channel channel, Integer position){
             if(activity instanceof FriendRequestActivity){
                 ((FriendRequestActivity) activity).getFriendRequestViewModel().postReact(channel).observe(activity, res -> {
                     if(RestUtils.isSuccess(res)){
-                        Toast.makeText(activity, "Request successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else if (activity instanceof HomeActivity) {
                 if(((HomeActivity) activity).getFragmentTarget() == ((HomeActivity) activity).getFragmentMessageConfig()){
                     ((HomeActivity) activity).getHomeViewModel().postReactOwner(channel).observe(activity, res -> {
                         if(RestUtils.isSuccess(res)){
-                            Toast.makeText(activity, "Request successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if(((HomeActivity) activity).getFragmentTarget() == ((HomeActivity) activity).getFragmentContact()){
+                    ((HomeActivity) activity).getHomeViewModel().postReact(channel).observe(activity, res -> {
+                        if(RestUtils.isSuccess(res)){
+                            Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             }
             this.btnAccept.setVisibility(View.GONE);
             this.btnReject.setVisibility(View.GONE);
+            this.btnRemove.setVisibility(View.GONE);
+            this.btnChangeAdmin.setVisibility(View.GONE);
+            if("CANCEL".equals(channel.getType())){
+                contacts.remove(position.intValue());
+                notifyDataSetChanged();
+            }
         }
 
-        public void actionView(Channel channel){
+        public void actionView(Channel channel, Integer position){
             this.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(activity instanceof HomeActivity){
-                        if(((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentContact())){
+                        if(((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentContact()) ||
+                                ((HomeActivity) activity).getFragmentTarget().equals(((HomeActivity)activity).getFragmentGroup())){
                             ((HomeActivity) activity).setFragmentMessage(channel);
                         }
                     }
+                }
+            });
+
+            this.cbCheck.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    channel.setCreateGroup(((CheckBox) view).isChecked());
                 }
             });
 
@@ -175,31 +208,59 @@ public class ContactAdapter extends ArrayAdapter<Channel> {
             this.btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(channel.getChannelId() != null) channel.setId(channel.getChannelId());
+                    if(channel.getId() != null) channel.setChannelId(channel.getId());
+                    if(channel.getId() == null) channel.setId(tmpChannelId);
                     channel.setStatus(DataStatic.STATUS.ACCEPT);
-                    postReactEvent(channel);
+                    postReactEvent(channel, position);
                 }
             });
 
             this.btnReject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(channel.getChannelId() != null) channel.setId(channel.getChannelId());
+                    if(channel.getId() != null) channel.setChannelId(channel.getId());
+                    if(channel.getId() == null) channel.setId(tmpChannelId);
                     channel.setStatus(DataStatic.STATUS.REJECT);
-                    postReactEvent(channel);
+                    postReactEvent(channel, position);
                 }
             });
 
             this.btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(channel.getChannelId() != null) channel.setId(channel.getChannelId());
+                    if(channel.getId() != null) channel.setChannelId(channel.getId());
+                    if(channel.getId() == null) channel.setId(tmpChannelId);
+
                     channel.setStatus(DataStatic.STATUS.CANCEL);
-                    postReactEvent(channel);
+                    postReactEvent(channel, position);
                 }
             });
 
             this.cbCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    channel.setCreateGroup(b);
+                    channel.setHaveCheckbox(b);
+                }
+            });
+
+            this.btnChangeAdmin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(activity instanceof HomeActivity){
+                        channel.setId(tmpChannelId);
+                        ((HomeActivity) activity).getHomeViewModel().updateOwner(channel).observe(activity, res -> {
+                            if(RestUtils.isSuccess(res)){
+                                Toast.makeText(activity, "Change owner successful", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(activity, "Change owner fail", Toast.LENGTH_SHORT).show();
+                            }
+                            ((HomeActivity) activity).getFragmentMessageConfig().getDialogGroupMembers().hide();
+                            ((HomeActivity) activity).setFragmentHome();
+                        });
+                    }
                 }
             });
         }

@@ -78,6 +78,43 @@
             android:text="Request" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/view_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_et_comment"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btn_request">
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:background="@null"
+            android:gravity="center|left"
+            android:hint="Search"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="13sp"
+            android:textStyle="italic" />
+
+        <com.vn.chat.common.view.icon.TextViewAwsSo
+            android:id="@+id/btn_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="@string/ico_search"
+            android:textColor="@color/color_blue"
+            android:textSize="15sp" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
@@ -86,7 +123,7 @@
         android:text="Friend"
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/btn_request" />
+        app:layout_constraintTop_toBottomOf="@+id/view_search" />
 
     <TextView
         android:id="@+id/tv_no_data"
@@ -101,17 +138,23 @@
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
-    <ListView
-        android:id="@+id/lv_data"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lv_data"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

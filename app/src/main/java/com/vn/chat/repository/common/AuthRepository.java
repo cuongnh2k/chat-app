@@ -30,8 +30,8 @@ public class AuthRepository {
         this.authRequest = RetrofitRequest.instance(application, DataStatic.COMMON_URL).create(AuthRequest.class);
     }
     
-    public LiveData<ApiResponse<Device>> login(User user){
-        MutableLiveData<ApiResponse<Device>> data = new MutableLiveData<>();
+    public LiveData<ApiResponse<Object>> login(User user){
+        MutableLiveData<ApiResponse<Object>> data = new MutableLiveData<>();
         try{
             this.authRequest.login(user).enqueue(new Callback<ApiResponse<Device>>() {
                 @Override
@@ -125,6 +125,22 @@ public class AuthRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<Device>> call, Throwable t) {
+                System.out.println("ERROR: "+new Gson().toJson(call));
+            }
+        });
+        return data;
+    }
+
+    public LiveData<ApiResponse<User>> updateUser(User user){
+        MutableLiveData<ApiResponse<User>> data = new MutableLiveData<>();
+        this.authRequest.update(user).enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                data.setValue(RestUtils.get(response));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
                 System.out.println("ERROR: "+new Gson().toJson(call));
             }
         });

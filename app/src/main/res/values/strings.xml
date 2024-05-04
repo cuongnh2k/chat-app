@@ -40,6 +40,8 @@
     <string name="ico_media">&#xf87c;</string>
     <string name="ico_check">&#xf00c;</string>
     <string name="ico_times">&#xf00d;</string>
+    <string name="ico_out">&#xf2f5;</string>
+    <string name="ico_key">&#xf084;</string>
 
     <string name="txt_sign_up">Sign Up</string>
     <string name="txt_sign_in">Sign In</string>

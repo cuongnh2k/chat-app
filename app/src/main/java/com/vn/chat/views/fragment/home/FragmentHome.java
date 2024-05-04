@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,8 +17,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.vn.chat.R;
-import com.vn.chat.common.view.common.NonScrollListView;
+import com.vn.chat.common.utils.RestUtils;
 import com.vn.chat.data.Channel;
+import com.vn.chat.data.SearchDTO;
 import com.vn.chat.views.activity.HomeActivity;
 import com.vn.chat.views.adapter.ChannelAdapter;
 
@@ -34,11 +36,15 @@ public class FragmentHome extends Fragment {
     private EditText etSearch;
     private TextView tvNoData;
     private View view;
-    private List<Channel> channels;
+    private static List<Channel> channels = new ArrayList<>();
+
+    private SearchDTO search = new SearchDTO();
+    private boolean isOver = false, isLoad = false;
 
     @SuppressLint("ValidFragment")
     public FragmentHome(HomeActivity mContext){
         this.context = mContext;
+        this.channels = new ArrayList<>();
     }
 
     @Nullable
@@ -46,13 +52,11 @@ public class FragmentHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         this.view = inflater.inflate(RES_ID, container, false);
         this.init();
-        this.loadLastedChannel();
         this.actionView();
         return this.view;
     }
 
     private void init(){
-        this.channels = new ArrayList<>();
         this.etSearch = view.findViewById(R.id.et_search);
         this.tvNoData = view.findViewById(R.id.tv_no_data);
         this.lvData = view.findViewById(R.id.lv_data);
@@ -60,19 +64,28 @@ public class FragmentHome extends Fragment {
         this.lvData.setAdapter(this.channelAdapter);
     }
 
-    private void loadLastedChannel(){
-        lvData.setVisibility(View.GONE);
-        tvNoData.setVisibility(View.VISIBLE);
-        channels.clear();
-        channelAdapter.notifyDataSetChanged();
-        context.getHomeViewModel().getLastedChannel().observe(context, res -> {
-            if(res.getCode().equals(1)) {
+    private void addMoreData(){
+        Log.d("FragmentHome", "addMoreData: "+search.getPageNumber());
+        isLoad = true;
+        if(search.getPageNumber().equals(0)){
+            lvData.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        context.getHomeViewModel().getLastedChannel(search).observe(context, res -> {
+            if(RestUtils.isSuccess(res)) {
                 if(res.getItems().size() > 0){
                     lvData.setVisibility(View.VISIBLE);
                     tvNoData.setVisibility(View.GONE);
-                    channelAdapter.notifyDataSetChanged(res.getItems());
+                    channels.addAll(res.getItems());
+                    channelAdapter.notifyDataSetChanged();
+                }else{
+                    isOver = true;
                 }
+            }else{
+                isOver = true;
             }
+            search.addPage();
+            isLoad = false;
         });
     }
 
@@ -103,7 +116,26 @@ public class FragmentHome extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 Log.d("FragmentHome", "afterTextChanged: "+editable.toString());
-                channelAdapter.getFilter().filter(editable.toString());
+            }
+        });
+
+        this.lvData.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount){
+                    // here you have reached end of list, load more data
+                    if (!isOver) {
+                        if (!isLoad) {
+                            addMoreData();
+                        }
+                    }
+                }
             }
         });
     }

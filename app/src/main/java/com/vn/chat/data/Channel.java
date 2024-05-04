@@ -17,9 +17,14 @@ public class Channel {
     private String channelId;
     private String status;
     private String search;
+    private String ownerId;
+    private boolean isCreateGroup = false;
     private boolean isRequest = false;
     private boolean isAccept = false;
-    private boolean isCreateGroup = false;
+    private boolean haveCheckbox = false;
+    private boolean isCancel = false;
+    private boolean isAdmin = false;
+    private boolean isChangeAdmin = false;
 
     public Channel() {
     }
@@ -29,22 +34,26 @@ public class Channel {
         this.channelId = id;
     }
 
-    public Channel(String userId, String name, String email, boolean isRequest) {
+    public Channel(String userId, String name, String email, boolean isRequest, String avatar) {
         this.name = name;
         this.email = email;
         this.userId = userId;
         this.isRequest = isRequest;
+        this.avatarUrl = avatar;
     }
 
-    public Channel(String userId, String name, String email, boolean isRequest, boolean isAccept) {
+    public Channel(String userId, String name, String email, boolean isRequest, boolean isAccept, String avatar) {
         this.name = name;
         this.email = email;
         this.userId = userId;
         this.isRequest = isRequest;
         this.isAccept = isAccept;
+        this.avatarUrl = avatar;
     }
 
     public String getId() {
+        if(id == null && channelId != null) return channelId;
+        else if(id != null && channelId == null) return id;
         return id;
     }
 
@@ -148,12 +157,12 @@ public class Channel {
         this.status = status;
     }
 
-    public boolean isCreateGroup() {
-        return isCreateGroup;
+    public boolean isHaveCheckbox() {
+        return haveCheckbox;
     }
 
-    public void setCreateGroup(boolean createGroup) {
-        isCreateGroup = createGroup;
+    public void setHaveCheckbox(boolean haveCheckbox) {
+        this.haveCheckbox = haveCheckbox;
     }
 
     public String getSearch() {
@@ -162,5 +171,45 @@ public class Channel {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public boolean isCancel() {
+        return isCancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        isCancel = cancel;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isChangeAdmin() {
+        return isChangeAdmin;
+    }
+
+    public void setChangeAdmin(boolean changeAdmin) {
+        isChangeAdmin = changeAdmin;
+    }
+
+    public boolean isCreateGroup() {
+        return isCreateGroup;
+    }
+
+    public void setCreateGroup(boolean createGroup) {
+        isCreateGroup = createGroup;
     }
 }

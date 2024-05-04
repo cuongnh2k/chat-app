@@ -137,4 +137,28 @@
             android:text="Add to group" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/btn_out_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_border"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_add_to_group">
+
+        <com.vn.chat.common.view.icon.TextViewAwsSo
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textColor="@color/color_orange"
+            android:text="@string/ico_out" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_orange"
+            android:text="Out group" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

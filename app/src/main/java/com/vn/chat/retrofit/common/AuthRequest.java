@@ -14,6 +14,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -28,6 +29,9 @@ public interface AuthRequest {
     @POST("common/user/sign-up")
     Call<ApiResponse<User>> register(@Body User user);
 
+    @PUT("common/user")
+    Call<ApiResponse<User>> update(@Body User user);
+
     @POST("common/device/{deviceId}/active")
     Call<ApiResponse<Device>> activeDevice(@Path("deviceId") String deviceId, @Body Device device);
 
@@ -37,10 +41,7 @@ public interface AuthRequest {
     @POST("common/user/{userId}/active")
     Call<ApiResponse<User>> activeUser(@Path("userId") String userId, @Body User user);
 
-    @POST("common/device/refresh-token")
-    Call<ApiResponse<User>> refreshToken();
-
     @GET("common/device")
-    Call<ApiResponse<Map<String, Object>>> getDevice(@Query("activated") String activated);
+    Call<ApiResponse<Map<String, Object>>> getDevice(@Header("Authorization") String auth, @Query("activated") String activated);
 
 }

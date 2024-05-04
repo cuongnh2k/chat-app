@@ -24,6 +24,7 @@ import com.vn.chat.data.File;
 import com.vn.chat.data.User;
 import com.vn.chat.views.activity.AuthActivity;
 import com.vn.chat.views.activity.HomeActivity;
+import com.vn.chat.views.dialog.DialogChangePassword;
 
 @SuppressLint("ValidFragment")
 public class FragmentProfile extends Fragment {
@@ -92,9 +93,35 @@ public class FragmentProfile extends Fragment {
                 });
             }
         });
+
+        this.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userInfo.setName(etFullName.getText().toString());
+                activity.showProgress("Request", "Wait!!!");
+                activity.getHomeViewModel().updateUser(userInfo).observe(activity, res -> {
+                    if(RestUtils.isSuccess(res)){
+                        DataStatic.AUTHOR.USER_INFO.setName(userInfo.getName());
+                        DataStatic.AUTHOR.USER_INFO.setAvatarUrl(userInfo.getAvatarUrl());
+                        Toast.makeText(activity, "Update information successful", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(activity, "Update fail", Toast.LENGTH_SHORT).show();
+                    }
+                    activity.hideProgress();
+                });
+            }
+        });
+
+        this.btnChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DialogChangePassword(activity).show();
+            }
+        });
     }
 
     public void changeAvatar(File file){
-
+        userInfo.setAvatarUrl(file.getUrl());
+        ImageUtils.loadUrl(activity, this.ivAvatar, file.getUrl());
     }
 }
